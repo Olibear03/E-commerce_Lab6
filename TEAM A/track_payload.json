@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "event_id": "EVT-2026-001",
+  "event_type": "Order Completed",
+  "source_system": "Node-A-ECommerce-Storefront",
+  "transaction_id": "ORD-2026-001",
+  "timestamp": "2026-10-21T21:00:00+08:00",
+  "entity_type": "Customer",
+  "entity_id": "CUST-001",
+  "customer": {
+    "customer_id": "CUST-001",
+    "customer_name": "Juan Dela Cruz",
+    "email": "juan.delacruz@example.com"
+  },
+  "status": "Completed",
+  "status_code": "C",
+  "payment": {
+    "method": "GCash",
+    "payment_status": "Paid",
+    "reference_no": "PAY-2026-001"
+  },
+  "currency": "PHP",
+  "line_items": [
+    {
+      "line_no": 1,
+      "product_id": "P001",
+      "product_name": "Wireless Mouse",
+      "category": "Computer Accessories",
+      "quantity": 2,
+      "unit_price": 599,
+      "unit_cost": 420,
+      "line_total": 1198
+    },
+    {
+      "line_no": 2,
+      "product_id": "P002",
+      "product_name": "USB-C Hub",
+      "category": "Computer Accessories",
+      "quantity": 1,
+      "unit_price": 1299,
+      "unit_cost": 900,
+      "line_total": 1299
+    }
+  ],
+  "totals": {
+    "item_count": 3,
+    "subtotal": 2497,
+    "discount": 0,
+    "tax_rate": 0.12,
+    "tax_amount": 299.64,
+    "shipping_fee": 0,
+    "monetary_value": 2796.64
+  }
+}
