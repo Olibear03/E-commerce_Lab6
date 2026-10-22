@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive BI Analytics Dashboard | ITEC 116 Activity 6</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- TOP EXECUTIVE HEADER -->
+        <header class="bi-header summon-card">
+            <div class="bi-brand-title">
+                <div class="bi-icon-box">
+                    <i data-lucide="bar-chart-3"></i>
+                </div>
+                <div class="bi-title-group">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                        <span class="bi-badge-pill">ITEC-116 TRACK E</span>
+                        <span class="bi-badge-pill outline">STAR SCHEMA OLAP</span>
+                    </div>
+                    <h1>Executive BI & Revenue Intelligence</h1>
+                    <p>Live Multidimensional Analytics • Fact_Sales, Dim_Product, Dim_Customer, Dim_Time</p>
+                </div>
+            </div>
+
+            <div class="bi-actions">
+                <div class="bi-status-pill">
+                    <span class="status-indicator-dot"></span>
+                    <span id="last-updated">Connecting to Warehouse...</span>
+                </div>
+                <button class="btn-bi" id="btn-refresh" onclick="fetchBIAnalytics()">
+                    <i data-lucide="refresh-cw"></i>
+                    <span>Refresh Data</span>
+                </button>
+                <a href="../node_a_storefront/index.html" class="btn-bi primary">
+                    <i data-lucide="shopping-bag"></i>
+                    <span>Storefront (Node A)</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- 4 TOP FINANCIAL & OPERATIONAL KPIS -->
+        <section class="metrics-row">
+            <!-- 1. Total Gross Revenue -->
+            <div class="metric-card cyan summon-card">
+                <div class="metric-top">
+                    <span class="metric-label">Total Gross Revenue</span>
+                    <div class="metric-icon-wrap cyan">
+                        <i data-lucide="badge-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="metric-value" id="metric-revenue">₱0.00</div>
+                <div class="metric-sub">
+                    <span class="trend-pill trend-up">
+                        <i data-lucide="shield-check"></i>
+                        100% Zero Loss
+                    </span>
+                    <span>Reconciled Fact_Sales</span>
+                </div>
+            </div>
+
+            <!-- 2. Total Net Margin / Profit -->
+            <div class="metric-card emerald summon-card">
+                <div class="metric-top">
+                    <span class="metric-label">Total Net Margin (Profit)</span>
+                    <div class="metric-icon-wrap emerald">
+                        <i data-lucide="trending-up"></i>
+                    </div>
+                </div>
+                <div class="metric-value" id="metric-margin">₱0.00</div>
+                <div class="metric-sub" id="metric-margin-sub">
+                    <span class="trend-pill trend-green">Margin Rate</span>
+                    <span>Calculating profit rate...</span>
+                </div>
+            </div>
+
+            <!-- 3. Completed Transactions -->
+            <div class="metric-card amber summon-card">
+                <div class="metric-top">
+                    <span class="metric-label">Completed Orders</span>
+                    <div class="metric-icon-wrap amber">
+                        <i data-lucide="package-check"></i>
+                    </div>
+                </div>
+                <div class="metric-value" id="metric-orders">0</div>
+                <div class="metric-sub" id="metric-orders-sub">
+                    <span class="trend-pill trend-amber">Full Ingestion</span>
+                    <span>Across 3 fulfillment hubs</span>
+                </div>
+            </div>
+
+            <!-- 4. Average Order Value -->
+            <div class="metric-card purple summon-card">
+                <div class="metric-top">
+                    <span class="metric-label">Average Order Value (AOV)</span>
+                    <div class="metric-icon-wrap purple">
+                        <i data-lucide="receipt"></i>
+                    </div>
+                </div>
+                <div class="metric-value" id="metric-aov">₱0.00</div>
+                <div class="metric-sub">
+                    <span class="trend-pill trend-purple">Per Basket</span>
+                    <span>Mean basket size</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAIN CHARTS ROW -->
+        <section class="charts-grid-main">
+            <!-- Time Trend Chart (Dim_Time) -->
+            <div class="chart-card summon-card">
+                <div class="chart-card-header">
+                    <div class="chart-title">
+                        <div class="chart-icon-box">
+                            <i data-lucide="line-chart"></i>
+                        </div>
+                        <span>Hourly Sales & Revenue Trend</span>
+                    </div>
+                    <span class="chart-badge">Dim_Time ✕ Fact_Sales</span>
+                </div>
+                <div class="chart-container-wrap">
+                    <canvas id="chart-time-trend"></canvas>
+                </div>
+            </div>
+
+            <!-- Warehouse Distribution Chart (Fulfillment Dimension) -->
+            <div class="chart-card summon-card">
+                <div class="chart-card-header">
+                    <div class="chart-title">
+                        <div class="chart-icon-box">
+                            <i data-lucide="building-2"></i>
+                        </div>
+                        <span>Sales by Warehouse Hub</span>
+                    </div>
+                    <span class="chart-badge">Fulfillment Split</span>
+                </div>
+                <div class="chart-container-wrap">
+                    <canvas id="chart-warehouse"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECONDARY CHARTS ROW -->
+        <section class="charts-grid-secondary">
+            <!-- Customer Leaderboard (Dim_Customer) -->
+            <div class="chart-card summon-card">
+                <div class="chart-card-header">
+                    <div class="chart-title">
+                        <div class="chart-icon-box">
+                            <i data-lucide="users"></i>
+                        </div>
+                        <span>Customer Spend & Margin Leaderboard</span>
+                    </div>
+                    <span class="chart-badge">Dim_Customer</span>
+                </div>
+                <div class="chart-container-wrap">
+                    <canvas id="chart-customers"></canvas>
+                </div>
+            </div>
+
+            <!-- Product Dimensions Pricing Spread (Dim_Product) -->
+            <div class="chart-card summon-card">
+                <div class="chart-card-header">
+                    <div class="chart-title">
+                        <div class="chart-icon-box">
+                            <i data-lucide="tags"></i>
+                        </div>
+                        <span>Catalog Selling Price vs Base Cost</span>
+                    </div>
+                    <span class="chart-badge">Dim_Product Spread</span>
+                </div>
+                <div class="chart-container-wrap">
+                    <canvas id="chart-products"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- STAR SCHEMA TRANSACTION LEDGER -->
+        <section class="ledger-card summon-card">
+            <div class="ledger-header">
+                <div class="ledger-title-group">
+                    <div class="ledger-icon-box">
+                        <i data-lucide="database"></i>
+                    </div>
+                    <div>
+                        <h3 class="ledger-title">Star Schema Fact_Sales Live Ledger</h3>
+                        <p class="ledger-sub">Synchronized with local analytical warehouse: <code>data/warehouse.db</code></p>
+                    </div>
+                </div>
+                <div class="ledger-sync-pill">
+                    <i data-lucide="activity"></i>
+                    <span>REAL-TIME SQL OLAP SYNC</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="bi-table">
+                    <thead>
+                        <tr>
+                            <th>Fact ID</th>
+                            <th>Transaction ID</th>
+                            <th>Customer (Dim_Customer)</th>
+                            <th>Warehouse Hub</th>
+                            <th>Units Sold</th>
+                            <th>Monetary Value</th>
+                            <th>Net Margin</th>
+                            <th>Status Code</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledger-tbody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: #64748b; padding: 32px;">
+                                Loading warehouse transactions...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- BI QUERIES & VISUALIZATIONS -->
+    <script src="queries.js"></script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GADGETSTYLE | Modern Tech & Hardware Storefront (ITEC 116 Demo)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- ======================================================================
+         TOP BAR & NAVBAR (Matches the uploaded Memphis/Graphic style)
+         ====================================================================== -->
+    <header class="site-header">
+        <div class="brand-block" onclick="navigateTo('home')">
+            <div class="brand-hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="brand-logo">GADGETSTYLE<span class="dot">.</span></div>
+        </div>
+
+        <nav class="navbar">
+            <ul class="nav-links" id="nav-links-list">
+                <li><a href="javascript:void(0)" class="nav-link active" id="nav-home" onclick="navigateTo('home', event)">Home</a></li>
+                <li><a href="javascript:void(0)" class="nav-link" id="nav-featured" onclick="navigateTo('featured', event)">Featured</a></li>
+                <li><a href="javascript:void(0)" class="nav-link" id="nav-categories" onclick="navigateTo('categories', event)">Categories</a></li>
+                <li><a href="javascript:void(0)" class="nav-link" id="nav-products" onclick="navigateTo('products', event)">Products</a></li>
+                <li>
+                    <a href="javascript:void(0)" class="nav-link demo-pill" id="nav-demo" onclick="navigateTo('demo', event)">
+                        <span class="pulse-dot"></span>
+                        Activity Demo
+                    </a>
+                </li>
+                <div class="nav-slider-indicator" id="nav-slider-indicator"></div>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="../ui_bi_dashboard/BI_dashboard.html" class="nav-link" style="border: 1.5px solid var(--color-black); padding: 7px 12px; border-radius: 4px; box-shadow: var(--shadow-brutal-sm); background: #fff; font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 6px;" title="Executive BI Analytics Dashboard">
+                    <span>BI Analytics</span>
+                    <span>📊</span>
+                </a>
+                <button class="cart-button" onclick="toggleCart(true)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span>CART</span>
+                    <span class="cart-counter" id="header-cart-counter">0</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- VIEW CONTAINER -->
+    <div class="view-container">
+
+        <!-- ==================================================================
+             PAGE 1: STOREFRONT HOMEPAGE
+             ================================================================== -->
+        <main class="view-page active" id="page-home">
+            
+            <!-- HERO SECTION (Neo-Brutalist Memphis Split Layout) -->
+            <section class="hero-section" id="hero-section">
+                
+                <!-- Left Hero (White background, Outline Heading, Geometric accents) -->
+                <div class="hero-left">
+                    <!-- Geometric accents -->
+                    <div class="geo-shape geo-triangle-striped"></div>
+                    <div class="geo-shape geo-triangle-cluster">
+                        <div class="cluster-row">
+                            <div class="wire-triangle"></div>
+                            <div class="wire-triangle"></div>
+                            <div class="wire-triangle"></div>
+                        </div>
+                        <div class="cluster-row">
+                            <div class="wire-triangle"></div>
+                            <div class="wire-triangle"></div>
+                            <div class="wire-triangle"></div>
+                            <div class="wire-triangle"></div>
+                        </div>
+                    </div>
+
+                    <!-- Typography Content -->
+                    <div class="hero-headings">
+                        <h1 class="hero-title-outline">Online</h1>
+                        <h1 class="hero-title-solid">Shopping</h1>
+                        <div class="hero-subhead">Easier Than Ever</div>
+                    </div>
+
+                    <p class="hero-description">
+                        Discover precision-engineered mechanical keyboards, pro gaming mice, high-speed hubs, and ultra-smooth desk mats designed for developers, creators, and enthusiasts.
+                    </p>
+
+                    <div class="hero-cta-group">
+                        <button class="btn-black" onclick="navigateTo('featured')">
+                            See More
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                        <button class="btn-outline" onclick="navigateTo('demo')">
+                            Activity 6 Demo
+                        </button>
+                    </div>
+
+                    <!-- Bottom Memphis indicators -->
+                    <div class="hero-bottom-accents">
+                        <div class="slider-dots" style="cursor: pointer;">
+                            <span class="slider-dot" onclick="setHeroSlide(0)" title="Spider-Punk Mask"></span>
+                            <span class="slider-dot inactive" onclick="setHeroSlide(1)" title="Omnitrix FX Deluxe"></span>
+                            <span class="slider-dot inactive" onclick="setHeroSlide(2)" title="Ultimate Gaming Chair"></span>
+                            <span class="slider-dot inactive" onclick="setHeroSlide(3)" title="Geto Suguru Mug"></span>
+                        </div>
+                        <div class="geo-hatch-circle">
+                            <div class="geo-black-triangle"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hero (Sky Blue panel, Featured Gadget showcase, Floating overlays) -->
+                <div class="hero-right">
+                    <div class="dot-grid"></div>
+                    <div class="floating-black-wedge"></div>
+                    <div class="floating-wire-cluster">
+                        <div class="cluster-row">
+                            <div class="wire-triangle"></div>
+                            <div class="wire-triangle"></div>
+                        </div>
+                        <div class="cluster-row">
+                            <div class="wire-triangle"></div>
+                            <div class="wire-triangle"></div>
+                            <div class="wire-triangle"></div>
+                        </div>
+                    </div>
+
+                    <!-- Featured Hero Gadget Card (Hover arrows to change slides, pause on hover) -->
+                    <div class="hero-showcase" onmouseenter="pauseHeroTimer()" onmouseleave="resumeHeroTimer()">
+                        <div class="hero-main-card">
+                            <!-- Hover Navigation Arrows -->
+                            <button class="hero-nav-arrow prev" onclick="prevHeroSlide(event)" title="Previous Gadget" aria-label="Previous Slide">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="15 18 9 12 15 6"></polyline>
+                                </svg>
+                            </button>
+                            <button class="hero-nav-arrow next" onclick="nextHeroSlide(event)" title="Next Gadget" aria-label="Next Slide">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </button>
+
+                            <span class="hero-badge-tag" id="hero-feature-badge">FEATURED DROP</span>
+                            <div class="hero-img-wrap">
+                                <img id="hero-feature-img" src="Products/Spiderpunk-mask.jpg" alt="Spider-Punk Mask">
+                            </div>
+                            <div class="hero-card-info">
+                                <div>
+                                    <h3 class="hero-card-title" id="hero-feature-title">Spider-Punk Mask</h3>
+                                    <div id="hero-feature-subtitle" style="font-size: 0.8rem; color: #64748b;">Light-Up LED Eyes • Breathable Shell</div>
+                                </div>
+                                <div class="hero-card-price" id="hero-feature-price">₱3,899.00</div>
+                            </div>
+                        </div>
+                        <div class="hero-floating-pill" id="hero-floating-pill">
+                            <span>🕷️ Cyber Spidey Tech</span>
+                            <span>•</span>
+                            <span>⚡ LED Pulse Mode</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MARQUEE FEATURE TICKER -->
+            <div class="feature-ticker">
+                <div class="ticker-track">
+                    <span class="ticker-item"><span class="dot">●</span> 100% AUTHENTIC GADGETS</span>
+                    <span class="ticker-item"><span class="dot">●</span> SAME-DAY MANILA DISPATCH</span>
+                    <span class="ticker-item"><span class="dot">●</span> ITEC 116 ENTERPRISE BI PIPELINE</span>
+                    <span class="ticker-item"><span class="dot">●</span> ZERO DATA LOSS RECONCILIATION</span>
+                    <span class="ticker-item"><span class="dot">●</span> 1-YEAR OFFICIAL HARDWARE WARRANTY</span>
+                    <span class="ticker-item"><span class="dot">●</span> 100% AUTHENTIC GADGETS</span>
+                    <span class="ticker-item"><span class="dot">●</span> SAME-DAY MANILA DISPATCH</span>
+                    <span class="ticker-item"><span class="dot">●</span> ITEC 116 ENTERPRISE BI PIPELINE</span>
+                </div>
+            </div>
+
+            <!-- ==============================================================
+                 1. FEATURED PRODUCTS SECTION (Spotlight Drops)
+                 ============================================================== -->
+            <section class="section-wrapper" id="featured-section">
+                <div class="section-header summon-header">
+                    <div class="section-title-group">
+                        <span class="section-kicker-badge gold">Curated Spotlight</span>
+                        <h2>Featured Products</h2>
+                        <p class="section-subtitle">Flagship drops, viral collector gear, and ultimate battlestation essentials.</p>
+                    </div>
+                    <button class="btn-black" onclick="navigateTo('products')">View Full Catalog &rarr;</button>
+                </div>
+
+                <div class="featured-grid" id="featured-grid">
+                    <!-- Rendered dynamically via app.js -->
+                </div>
+            </section>
+
+            <!-- ==============================================================
+                 2. CATEGORIES SECTION (Interactive Department Browser)
+                 ============================================================== -->
+            <section class="section-wrapper" id="categories-section">
+                <div class="section-header summon-header">
+                    <div class="section-title-group">
+                        <span class="section-kicker-badge">Explore Departments</span>
+                        <h2>Product Categories</h2>
+                        <p class="section-subtitle">Click any category below to immediately filter and browse the full inventory.</p>
+                    </div>
+                </div>
+
+                <div class="categories-grid" id="categories-grid">
+                    <!-- Rendered dynamically via app.js -->
+                </div>
+            </section>
+
+            <!-- ==============================================================
+                 3. ALL PRODUCTS CATALOG SECTION (Full Inventory)
+                 ============================================================== -->
+            <section class="catalog-section" id="products-section">
+                <div class="catalog-header summon-header">
+                    <div class="catalog-title-group">
+                        <span class="section-kicker-badge">Complete Inventory</span>
+                        <h2>All Products</h2>
+                        <p class="catalog-subtitle">Explore our full line-up of gadgets, mice, keyboards, and PC hardware ready for cart checkout.</p>
+                    </div>
+
+                    <div class="catalog-controls">
+                        <div class="search-box">
+                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <input type="text" id="product-search" class="search-input" placeholder="Search 32+ gadgets..." oninput="filterProducts()">
+                        </div>
+
+                        <select id="product-sort" class="sort-select" onchange="filterProducts()">
+                            <option value="featured">Sort: Featured</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="name">Name: A to Z</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Category Filter Pills -->
+                <div class="category-pills" id="category-pills-bar">
+                    <!-- Populated dynamically via app.js -->
+                </div>
+
+                <!-- Dynamic Products Grid -->
+                <div class="products-grid" id="products-grid">
+                    <!-- Rendered dynamically by app.js -->
+                </div>
+            </section>
+        </main>
+
+
+        <!-- ==================================================================
+             PAGE 2: ACTIVITY DEMO / ENTERPRISE BI PIPELINE MONITOR
+             ================================================================== -->
+        <main class="view-page" id="page-demo">
+            <section class="demo-dashboard-section">
+                
+                <!-- Demo Header Banner -->
+                <div class="demo-header-banner">
+                    <div class="demo-banner-title">
+                        <h1>
+                            ITEC 116 Activity 6: Enterprise BI Pipeline
+                        </h1>
+                        <p>Real-time End-to-End Orchestration: Node A (Storefront) ➜ Node B (Ingestion) ➜ Node C (ETL) ➜ Node D (QA Audit)</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <a href="../ui_bi_dashboard/BI_dashboard.html" class="btn-demo-action highlight" style="text-decoration: none; padding: 8px 16px;">
+                            📊 Open Visual BI Dashboard &rarr;
+                        </a>
+                        <div class="demo-badge-active">
+                            <span class="status-dot"></span>
+                            LIVE PIPELINE ACTIVE (PORT 5000)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4-Stage Architectural Flow Chart -->
+                <div class="pipeline-flow-bar">
+                    <div class="pipeline-nodes-wrapper">
+                        <!-- Node A -->
+                        <div class="pipeline-node-card active" id="card-node-a">
+                            <div class="node-header">
+                                <span class="node-tag">NODE A</span>
+                                <div class="node-status-indicator"><span class="status-dot"></span> Ready</div>
+                            </div>
+                            <h3 class="node-title">Storefront UI</h3>
+                            <p class="node-desc">Emits Schema v1.1 JSON transactional payloads on checkout.</p>
+                        </div>
+
+                        <!-- Node B -->
+                        <div class="pipeline-node-card" id="card-node-b">
+                            <div class="node-header">
+                                <span class="node-tag">NODE B</span>
+                                <div class="node-status-indicator"><span class="status-dot"></span> Port 5000</div>
+                            </div>
+                            <h3 class="node-title">BI Ingestion</h3>
+                            <p class="node-desc">Authenticates Bearer token & logs raw JSON to SQLite <code>staging_orders</code>.</p>
+                        </div>
+
+                        <!-- Node C -->
+                        <div class="pipeline-node-card" id="card-node-c">
+                            <div class="node-header">
+                                <span class="node-tag">NODE C</span>
+                                <div class="node-status-indicator"><span class="status-dot"></span> Ready</div>
+                            </div>
+                            <h3 class="node-title">ETL Pipeline</h3>
+                            <p class="node-desc">Transforms timestamps (ISO-8601), loads Star Schema (Facts + Dims).</p>
+                        </div>
+
+                        <!-- Node D -->
+                        <div class="pipeline-node-card" id="card-node-d">
+                            <div class="node-header">
+                                <span class="node-tag">NODE D</span>
+                                <div class="node-status-indicator"><span class="status-dot"></span> Ready</div>
+                            </div>
+                            <h3 class="node-title">QA & Governance</h3>
+                            <p class="node-desc">Reconciles row counts and revenue to certify 0% data loss.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Demo Control Deck -->
+                <div class="demo-control-deck">
+                    <button class="btn-demo-action primary" onclick="generateSingleMockOrder()">
+                        ⚡ Simulate 1 Mock Order
+                    </button>
+                    <button class="btn-demo-action highlight" onclick="generateBatchMockOrders(5)">
+                        🚀 Generate 5 Orders (Batch Stream)
+                    </button>
+                    <button class="btn-demo-action success" onclick="triggerETLPipeline()">
+                        🔄 Run ETL Pipeline Now
+                    </button>
+                    <button class="btn-demo-action" onclick="triggerQAAudit()">
+                        🛡️ Run QA Reconciliation Audit
+                    </button>
+                    <button class="btn-demo-action" onclick="fetchPipelineStatus()">
+                        ↻ Refresh Status
+                    </button>
+                    <a href="../ui_bi_dashboard/BI_dashboard.html" class="btn-demo-action" style="text-decoration: none;">
+                        📊 Open Visual BI Dashboard &rarr;
+                    </a>
+                </div>
+
+                <!-- 4 Rubric KPIs Summary Cards -->
+                <div class="kpi-cards-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Reconciliation Accuracy</div>
+                        <div class="kpi-value" id="kpi-reconciliation">100%</div>
+                        <span class="kpi-badge pass" id="kpi-loss-badge">Zero Row Loss [PASS]</span>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Orders Ingested</div>
+                        <div class="kpi-value" id="kpi-ingested-count">0</div>
+                        <span class="kpi-badge" id="kpi-staged-badge">Staging Orders (Track B)</span>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-label">Fact_Sales Records</div>
+                        <div class="kpi-value" id="kpi-fact-count">0</div>
+                        <span class="kpi-badge" id="kpi-pending-badge">Processed by ETL (Track C)</span>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-label">Warehouse Total Revenue</div>
+                        <div class="kpi-value" id="kpi-revenue">₱0.00</div>
+                        <span class="kpi-badge pass">Financial Reconciled</span>
+                    </div>
+                </div>
+
+                <!-- Dual Column Live Inspector -->
+                <div class="inspector-dual-grid">
+                    
+                    <!-- Left: Latest Emitted JSON Payload -->
+                    <div class="inspector-card">
+                        <div class="inspector-card-header">
+                            <span class="inspector-card-title">
+                                <span>📄</span> Node A: Latest Emitted JSON Payload (Schema v1.1)
+                            </span>
+                            <button class="btn-demo-action" style="padding: 4px 10px; font-size: 0.75rem;" onclick="copyPayloadToClipboard()">
+                                Copy JSON
+                            </button>
+                        </div>
+                        <div class="code-viewer-box" id="json-payload-viewer">
+                            <!-- Populated with highlighted JSON -->
+                        </div>
+                    </div>
+
+                    <!-- Right: Live Database Table Viewer -->
+                    <div class="inspector-card">
+                        <div class="inspector-card-header">
+                            <span class="inspector-card-title">
+                                <span>🗄️</span> SQLite Warehouse Inspector (staging_orders & Fact_Sales)
+                            </span>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="btn-demo-action" style="padding: 4px 8px; font-size: 0.75rem;" onclick="switchTableTab('staging')" id="tab-btn-staging">Staging</button>
+                                <button class="btn-demo-action" style="padding: 4px 8px; font-size: 0.75rem;" onclick="switchTableTab('facts')" id="tab-btn-facts">Fact_Sales</button>
+                            </div>
+                        </div>
+                        <div class="table-viewer-box" id="db-table-viewer">
+                            <!-- Table populated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Track D Reconciliation Terminal Output -->
+                <div class="inspector-card">
+                    <div class="inspector-card-header">
+                        <span class="inspector-card-title">
+                            <span>🛡️</span> Track D: QA Reconciliation Audit Output (node_d_governance)
+                        </span>
+                        <span style="font-size: 0.75rem; color: #86efac; font-family: var(--font-mono);">0% DATA LOSS VERIFIED</span>
+                    </div>
+                    <pre class="terminal-audit-box" id="audit-terminal-output">
+Click 'Run QA Reconciliation Audit' to inspect live reconciliation status...
+                    </pre>
+                </div>
+
+            </section>
+        </main>
+    </div>
+
+    <!-- ======================================================================
+         CART SLIDE-OVER DRAWER (Checkout Experience)
+         ====================================================================== -->
+    <div class="cart-drawer-overlay" id="cart-overlay" onclick="toggleCart(false)"></div>
+    
+    <aside class="cart-drawer" id="cart-drawer">
+        <div class="cart-drawer-header">
+            <h2 class="cart-drawer-title">Shopping Cart</h2>
+            <button class="cart-close-btn" onclick="toggleCart(false)">&times;</button>
+        </div>
+
+        <div class="cart-drawer-body">
+            <ul class="cart-items-list" id="cart-items">
+                <!-- Populated via app.js -->
+            </ul>
+
+            <!-- Checkout Order Configuration -->
+            <div class="checkout-metadata-box" id="checkout-options-box">
+                <div class="meta-field">
+                    <label for="customer-select">Customer Profile (Node A Entity):</label>
+                    <select id="customer-select" class="meta-select">
+                        <option value="CUST-001|Juan Dela Cruz|juan.delacruz@example.com">Juan Dela Cruz (CUST-001)</option>
+                        <option value="CUST-002|Maria Clara|maria.clara@example.com">Maria Clara (CUST-002)</option>
+                        <option value="CUST-003|Jose Rizal|jose.rizal@example.com">Jose Rizal (CUST-003)</option>
+                    </select>
+                </div>
+
+                <div class="meta-field">
+                    <label for="warehouse-select">Fulfillment Warehouse:</label>
+                    <select id="warehouse-select" class="meta-select">
+                        <option value="WH-MNL-01 (Manila)">WH-MNL-01 (Manila Hub)</option>
+                        <option value="WH-CAV-02 (Dasmariñas)">WH-CAV-02 (Dasmariñas)</option>
+                        <option value="WH-CEB-01 (Cebu)">WH-CEB-01 (Cebu Hub)</option>
+                    </select>
+                </div>
+
+                <div class="meta-field">
+                    <label for="payment-select">Payment Method:</label>
+                    <select id="payment-select" class="meta-select">
+                        <option value="GCash">GCash E-Wallet</option>
+                        <option value="Maya">Maya Digital</option>
+                        <option value="Credit Card">Credit Card / Debit</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-drawer-footer">
+            <div class="summary-rows">
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>₱<span id="subtotal">0.00</span></span>
+                </div>
+                <div class="summary-row">
+                    <span>VAT (12%)</span>
+                    <span>₱<span id="tax">0.00</span></span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>₱<span id="shipping">0.00</span></span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Total Amount</span>
+                    <span>₱<span id="total">0.00</span></span>
+                </div>
+            </div>
+
+            <button id="checkout-btn" class="btn-checkout" onclick="checkout()">
+                <span>Place Order & Ingest</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ======================================================================
+         FOOTER (Matches the reference image)
+         ====================================================================== -->
+    <footer class="site-footer">
+        <a href="javascript:void(0)" class="footer-url" onclick="navigateTo('home')">www.gadgetstyle.ph</a>
+        <div class="footer-icons">
+            <a href="mailto:demo@gadgetstyle.ph" class="footer-icon-circle" title="Contact Email">✉</a>
+            <a href="#location" class="footer-icon-circle" title="Manila Warehouse">📍</a>
+            <a href="tel:+63900000000" class="footer-icon-circle" title="Phone Support">📞</a>
+            <a href="javascript:void(0)" onclick="toggleCart(true)" class="footer-icon-circle" title="Cart">🛒</a>
+        </div>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-notice" id="toast-notice">
+        <div id="toast-message">Notification message here</div>
+        <button class="toast-btn-action" id="toast-action-btn" onclick="navigateTo('demo')">View Demo</button>
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script src="app.js"></script>
+</body>
+</html>
