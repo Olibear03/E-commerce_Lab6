@@ -419,19 +419,93 @@ const PRODUCTS = [
         rating: 5.0
     },
 
-    // --- COLLECTIBLES ---
+    // --- WATCHES & WEARABLES ---
     {
         id: "P021",
         name: "Omnitrix FX Deluxe Gadget",
-        category: "Collectibles & Gear",
+        category: "Watches & Wearables",
         price: 1899,
         cost: 1150,
         image: "Products/omnitrix.jpg",
         badge: "NOSTALGIA",
         badgeClass: "aesthetic",
-        specs: "Rotating Alien Dial with SFX • Green Alien Illuminator • Silicone Strap",
+        specs: "Rotating Alien Dial with SFX • Green Alien Illuminator • Silicone Wrist Strap",
         rating: 4.8,
         isFeatured: true
+    },
+    {
+        id: "P033",
+        name: "Apple Watch Ultra Stealth Edition",
+        category: "Watches & Wearables",
+        price: 24990,
+        cost: 18500,
+        image: "Products/apple-watch.jpg",
+        badge: "FLAGSHIP",
+        badgeClass: "bestseller",
+        specs: "49mm Aerospace Titanium • Always-On OLED • Dual-Frequency GPS • 100M Water Resistant",
+        rating: 5.0,
+        isFeatured: true
+    },
+    {
+        id: "P034",
+        name: "S9 Ultra 5G Smartwatch",
+        category: "Watches & Wearables",
+        price: 3499,
+        cost: 2200,
+        image: "Products/S9 Ultra 5G Smartwatch.jpg",
+        badge: "5G CELLULAR",
+        badgeClass: "hot",
+        specs: "Standalone 5G SIM • 2.02\" AMOLED Display • Bio-Tracker 4.0 • Bluetooth Calling",
+        rating: 4.8
+    },
+    {
+        id: "P035",
+        name: "Rabbit R1 AI Smart Companion Watch",
+        category: "Watches & Wearables",
+        price: 6899,
+        cost: 4500,
+        image: "Products/Rabbit R1 AI Watch.jpg",
+        badge: "AI WEARABLE",
+        badgeClass: "hot",
+        specs: "Generative AI Voice OS • 360° Rotatable Camera Eye • Analog Scroll Wheel",
+        rating: 4.9,
+        isFeatured: true
+    },
+    {
+        id: "P036",
+        name: "Spider-Man Web-Shooter Tracker Watch",
+        category: "Watches & Wearables",
+        price: 2499,
+        cost: 1600,
+        image: "Products/spiderman-tracker_watch.jpg",
+        badge: "SPIDEY TECH",
+        badgeClass: "aesthetic",
+        specs: "GPS Location Beacon • Web-Slinger Sound FX • Shock-Resistant Marvel Armor",
+        rating: 4.9
+    },
+    {
+        id: "P037",
+        name: "Chronos Ergonomic Sports Smartwatch",
+        category: "Watches & Wearables",
+        price: 4299,
+        cost: 2800,
+        image: "Products/ergonomic_watch.jpg",
+        badge: "ERGONOMIC",
+        badgeClass: "aesthetic",
+        specs: "Curved Wrist-Conforming Case • 14-Day Battery • VO2 Max & SpO2 Health Suite",
+        rating: 4.8
+    },
+    {
+        id: "P038",
+        name: "Velovories Cyberpunk Chronograph Watch",
+        category: "Watches & Wearables",
+        price: 3899,
+        cost: 2500,
+        image: "Products/velovories-watch.jpg",
+        badge: "NEO-CHRONO",
+        badgeClass: "aesthetic",
+        specs: "Dual Analog Dial & Digital OLED • Scratchproof Sapphire Glass • Milanese Mesh Strap",
+        rating: 4.9
     }
 ];
 
@@ -503,6 +577,11 @@ document.addEventListener('DOMContentLoaded', () => {
         setHeroSlide(nextIdx);
     }, 4500);
 
+    // Initial icon creation
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+
     // Auto-refresh pipeline metrics every 15 seconds if on demo tab
     setInterval(() => {
         const demoPage = document.getElementById('page-demo');
@@ -544,7 +623,10 @@ function setHeroSlide(idx) {
     if (subtitleEl) subtitleEl.innerText = slide.subtitle;
     if (priceEl) priceEl.innerText = slide.price;
     if (badgeEl) badgeEl.innerText = slide.badge;
-    if (pillEl) pillEl.innerHTML = slide.pillHtml;
+    if (pillEl) {
+        pillEl.innerHTML = slide.pillHtml;
+        if (window.lucide) lucide.createIcons();
+    }
 
     dots.forEach((dot, i) => {
         dot.classList.toggle('inactive', i !== heroIndex);
@@ -681,7 +763,7 @@ function renderFeaturedProducts() {
                 <span class="card-tag ${prod.badgeClass}">${prod.badge}</span>
             </div>
             <div class="card-body">
-                <div class="card-cat">${prod.category} • ⭐ ${prod.rating}</div>
+                <div class="card-cat">${prod.category} • <i data-lucide="star" style="width: 13px; height: 13px; fill: #ffd166; stroke: #121212; display: inline-block; vertical-align: -1px;"></i> ${prod.rating}</div>
                 <h3 class="card-title">${prod.name}</h3>
                 <p class="card-specs">${prod.specs}</p>
                 
@@ -697,7 +779,7 @@ function renderFeaturedProducts() {
                         <button class="qty-btn" onclick="stepQty('feat-qty-${prod.id}', 1)">+</button>
                     </div>
                     <button class="btn-add-cart" onclick="addProductToCart('${prod.id}', 'feat-qty-${prod.id}')">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <i data-lucide="shopping-bag" style="width: 15px; height: 15px;"></i>
                         Add to Cart
                     </button>
                 </div>
@@ -706,20 +788,23 @@ function renderFeaturedProducts() {
     `).join('');
 
     observeSummonCards();
+    if (window.lucide) lucide.createIcons();
 }
 
 // ============================================================================
 // 2. CATEGORIES SECTION RENDERING
 // ============================================================================
 const CATEGORY_META = [
-    { name: "Keyboards", icon: "⌨️", desc: "Mechanical & Anime Novelties" },
-    { name: "Mice", icon: "🖱️", desc: "Hamster & RGB Gaming" },
-    { name: "Audio", icon: "🎧", desc: "Marshall, Studio & Mics" },
-    { name: "PC Hardware", icon: "🖥️", desc: "NASA, Starfield & Matrix" },
-    { name: "Smartphones", icon: "📱", desc: "Red Magic, Z Flip & Flagships" },
-    { name: "Chairs & Setup", icon: "💺", desc: "Ergonomic & Gaming Chairs" },
-    { name: "Desk Accessories", icon: "⚡", desc: "Mugs, XXL Mats & Lamps" },
-    { name: "Hubs & Docks", icon: "🔌", desc: "USB-C & Fast Powered Hubs" }
+    { name: "Watches & Wearables", icon: "watch", desc: "Apple Watch, 5G & AI Chronos" },
+    { name: "Keyboards", icon: "keyboard", desc: "Mechanical & Anime Novelties" },
+    { name: "Mice", icon: "mouse", desc: "Hamster & RGB Gaming" },
+    { name: "Audio", icon: "headphones", desc: "Marshall, Studio & Mics" },
+    { name: "PC Hardware", icon: "cpu", desc: "NASA, Starfield & Matrix" },
+    { name: "Smartphones", icon: "smartphone", desc: "Red Magic, Z Flip & Flagships" },
+    { name: "Collectibles & Gear", icon: "shield", desc: "Spider-Punk Wearable Tech" },
+    { name: "Chairs & Setup", icon: "armchair", desc: "Ergonomic & Gaming Chairs" },
+    { name: "Desk Accessories", icon: "sparkles", desc: "Mugs, XXL Mats & Lamps" },
+    { name: "Hubs & Docks", icon: "cable", desc: "USB-C & Fast Powered Hubs" }
 ];
 
 function renderCategories() {
@@ -730,7 +815,7 @@ function renderCategories() {
         const count = PRODUCTS.filter(p => p.category === cat.name).length;
         return `
             <div class="category-card summon-card" onclick="selectCategoryFilter('${cat.name}')">
-                <div class="cat-icon-wrap">${cat.icon}</div>
+                <div class="cat-icon-wrap"><i data-lucide="${cat.icon}"></i></div>
                 <div class="cat-card-name">${cat.name}</div>
                 <div class="cat-card-count">${count} items</div>
             </div>
@@ -738,6 +823,7 @@ function renderCategories() {
     }).join('');
 
     observeSummonCards();
+    if (window.lucide) lucide.createIcons();
 }
 
 function renderCategoryPills() {
@@ -750,7 +836,7 @@ function renderCategoryPills() {
         <button class="cat-pill ${cat === currentCategory ? 'active' : ''}" 
                 id="cat-pill-${cat.replace(/\s+/g, '-')}" 
                 onclick="setCategoryFilter('${cat}', this)">
-            ${cat === 'all' ? 'All Products (32)' : cat}
+            ${cat === 'all' ? `All Products (${PRODUCTS.length})` : cat}
         </button>
     `).join('');
 }
@@ -821,7 +907,7 @@ function renderProducts() {
                 <span class="card-tag ${prod.badgeClass}">${prod.badge}</span>
             </div>
             <div class="card-body">
-                <div class="card-cat">${prod.category} • ⭐ ${prod.rating}</div>
+                <div class="card-cat">${prod.category} • <i data-lucide="star" style="width: 13px; height: 13px; fill: #ffd166; stroke: #121212; display: inline-block; vertical-align: -1px;"></i> ${prod.rating}</div>
                 <h3 class="card-title">${prod.name}</h3>
                 <p class="card-specs">${prod.specs}</p>
                 
@@ -837,7 +923,7 @@ function renderProducts() {
                         <button class="qty-btn" onclick="stepQty('qty-${prod.id}', 1)">+</button>
                     </div>
                     <button class="btn-add-cart" onclick="addProductToCart('${prod.id}', 'qty-${prod.id}')">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                        <i data-lucide="shopping-bag" style="width: 15px; height: 15px;"></i>
                         Add to Cart
                     </button>
                 </div>
@@ -846,6 +932,7 @@ function renderProducts() {
     `).join('');
 
     observeSummonCards();
+    if (window.lucide) lucide.createIcons();
 }
 
 // ============================================================================
@@ -997,15 +1084,12 @@ function updateCartUI() {
     if (cart.length === 0) {
         cartList.innerHTML = `
             <div class="cart-empty-message">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
+                <i data-lucide="shopping-bag" style="width: 44px; height: 44px; stroke-width: 1.5; color: var(--color-gray-400); margin-bottom: 8px;"></i>
                 <p>Your cart is empty.</p>
                 <p style="font-size: 0.85rem; margin-top: 4px;">Add gadgets to test Node A checkout.</p>
             </div>
         `;
+        if (window.lucide) lucide.createIcons();
         subtotalEl.innerText = '0.00';
         taxEl.innerText = '0.00';
         shippingEl.innerText = '0.00';
@@ -1029,11 +1113,16 @@ function updateCartUI() {
                         <button class="qty-btn" onclick="stepCartItem('${item.product_id}', 1)">+</button>
                     </div>
                     <div class="cart-item-total">₱${item.line_total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
-                    <button class="cart-item-remove" onclick="removeCartItem('${item.product_id}')">Remove</button>
+                    <button class="cart-item-remove" onclick="removeCartItem('${item.product_id}')">
+                        <i data-lucide="trash-2" style="width: 12px; height: 12px; margin-right: 3px;"></i>
+                        Remove
+                    </button>
                 </div>
             </div>
         </li>
     `).join('');
+
+    if (window.lucide) lucide.createIcons();
 
     let subtotal = cart.reduce((sum, item) => sum + item.line_total, 0);
     let tax = subtotal * 0.12;
@@ -1154,7 +1243,8 @@ async function checkout() {
         alert(`Failed to connect to Track B Endpoint (${API_BASE}).\nIs PHP server running on 127.0.0.1:5000?`);
     } finally {
         checkoutBtn.disabled = false;
-        checkoutBtn.innerHTML = `<span>Place Order & Ingest</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
+        checkoutBtn.innerHTML = `<span>Place Order & Ingest</span><i data-lucide="send" style="width: 18px; height: 18px;"></i>`;
+        if (window.lucide) lucide.createIcons();
     }
 }
 

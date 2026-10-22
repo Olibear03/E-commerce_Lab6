@@ -55,6 +55,15 @@ body {
     overflow-x: hidden;
 }
 
+i[data-lucide],
+svg.lucide {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    stroke-width: 2.2px;
+}
+
 /* ==========================================================================
    HEADER & NAVBAR (Matches the uploaded style)
    ========================================================================== */
@@ -910,6 +919,14 @@ body {
     justify-content: center;
     font-size: 1.6rem;
     transition: var(--transition);
+}
+
+.cat-icon-wrap i,
+.cat-icon-wrap svg {
+    width: 26px;
+    height: 26px;
+    color: var(--color-black);
+    stroke-width: 2.2px;
 }
 
 .category-card:hover .cat-icon-wrap {
@@ -1903,8 +1920,8 @@ body {
 }
 
 .footer-icon-circle {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: var(--bg-white);
     color: var(--color-black);
@@ -1915,6 +1932,16 @@ body {
     font-size: 0.9rem;
     font-weight: 800;
     transition: var(--transition);
+    border: 1.5px solid var(--color-black);
+    box-shadow: 2px 2px 0px var(--color-black);
+}
+
+.footer-icon-circle i,
+.footer-icon-circle svg {
+    width: 17px;
+    height: 17px;
+    color: var(--color-black);
+    stroke-width: 2.2px;
 }
 
 .footer-icon-circle:hover {

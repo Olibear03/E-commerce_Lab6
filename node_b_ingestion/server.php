@@ -337,7 +337,10 @@ if ($action) {
                 ["id" => "P003", "name" => "Moon Cherry Mechanical Keyboard", "category" => "Keyboards", "price" => 2499, "cost" => 1800],
                 ["id" => "P011", "name" => "Multiport 7-in-1 USB-C Hub", "category" => "Hubs & Docks", "price" => 1299, "cost" => 900],
                 ["id" => "P007", "name" => "Cyberpunk Neon XXL Desk Mat", "category" => "Desk Accessories", "price" => 750, "cost" => 450],
-                ["id" => "P005", "name" => "Auroza RGB Gaming Mouse", "category" => "Mice", "price" => 899, "cost" => 600]
+                ["id" => "P005", "name" => "Auroza RGB Gaming Mouse", "category" => "Mice", "price" => 899, "cost" => 600],
+                ["id" => "P033", "name" => "Apple Watch Ultra Stealth Edition", "category" => "Watches & Wearables", "price" => 24990, "cost" => 18500],
+                ["id" => "P035", "name" => "Rabbit R1 AI Smart Companion Watch", "category" => "Watches & Wearables", "price" => 6899, "cost" => 4500],
+                ["id" => "P021", "name" => "Omnitrix FX Deluxe Gadget", "category" => "Watches & Wearables", "price" => 1899, "cost" => 1150]
             ];
             $warehouses = ["WH-MNL-01 (Manila)", "WH-CAV-02 (Dasmariñas)", "WH-CEB-01 (Cebu)"];
             $payments = ["GCash", "Credit Card", "Maya"];
