@@ -1,5 +1,27 @@
 <?php
-// node_d_governance/audit_script.php
+/**
+ * ============================================================================
+ * ITEC 116 - GROUP ACTIVITY 6: TRACK D (QA & ANALYTICS GOVERNANCE)
+ * File: node_d_governance/audit_script.php
+ * ============================================================================
+ *
+ * [RUBRIC REQUIREMENT - TASK 3: BI Governance & Pipeline Audit (Track D)]
+ * - "Define 3 critical metrics to assess pipeline health (ETL Processing Latency,
+ *    Data Ingestion Error Rate, Row Count Reconciliation Accuracy)."
+ * - "Technical Validation Check: Audit the output of Track C to verify that data
+ *    in the Module 7 BI staging layer matches the total values emitted by the
+ *    Module 6 E-Commerce storefront without row loss or schema corruption."
+ *
+ * HOW THIS WORKS (FOR ORAL DEFENSE):
+ * 1. Queries Node B (`staging_orders`) to count total ingested transactions
+ *    and how many have `is_processed = 1`.
+ * 2. Queries Node C (`Fact_Sales`) to count total transformed fact rows and
+ *    sum the total financial `monetary_value` (in PHP ₱).
+ * 3. Compares `Total Ingested (Track B) === Total Facts (Track C)`.
+ *    If they match 100%, it certifies ZERO DATA LOSS (`[PASS]`).
+ * ============================================================================
+ */
+
 $db_path = __DIR__ . '/../data/warehouse.db';
 
 try {
@@ -10,7 +32,9 @@ try {
     echo "  TRACK D: QA RECONCILIATION AUDIT\n";
     echo "========================================\n\n";
 
-    // 1. Check Node B (Staging/Ingestion)
+    // ========================================================================
+    // 1. AUDIT NODE B (Staging / Ingestion Layer)
+    // ========================================================================
     $stmt_b = $pdo->query("SELECT COUNT(*) as total_rows, is_processed FROM staging_orders GROUP BY is_processed");
     $staging_stats = $stmt_b->fetchAll(PDO::FETCH_ASSOC);
     
@@ -24,15 +48,19 @@ try {
         }
     }
 
-    // 2. Check Node C (Fact_Sales)
+    // ========================================================================
+    // 2. AUDIT NODE C (Star Schema Fact_Sales Layer)
+    // ========================================================================
     $stmt_c = $pdo->query("SELECT COUNT(*) as total_facts, SUM(monetary_value) as total_revenue FROM Fact_Sales");
     $fact_stats = $stmt_c->fetch(PDO::FETCH_ASSOC);
     
     $total_facts = $fact_stats['total_facts'] ?? 0;
     $total_revenue = $fact_stats['total_revenue'] ?? 0;
 
-    // --- PRINT REPORT ---
-    echo "1. ROW RECONCILIATION:\n";
+    // ========================================================================
+    // 3. GENERATE GOVERNANCE RECONCILIATION REPORT
+    // ========================================================================
+    echo "1. ROW RECONCILIATION (KPI #3 - 0% Data Loss Check):\n";
     echo "   - Total Orders Ingested (Track B): " . $total_ingested . "\n";
     echo "   - Orders Processed by ETL: " . $total_processed . "\n";
     echo "   - Total Rows in Fact_Sales (Track C): " . $total_facts . "\n";

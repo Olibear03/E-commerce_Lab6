@@ -1,0 +1,408 @@
+================================================================================
+ITEC 116 – SYSTEM INTEGRATION AND ARCHITECTURE 2
+GROUP ACTIVITY 6: DEVELOPMENT & INTEGRATION (E-COMMERCE & BUSINESS INTELLIGENCE)
+MASTER ORAL DEFENSE, CODE LOCATOR & Q&A GUIDE (ALL TRACKS + TRACK C FOCUS)
+================================================================================
+
+This guide is designed so that you (Track C) and every member of your group
+(Tracks A, B, C, and D) know:
+  1. How the entire system works end-to-end.
+  2. Exactly WHICH FILE and LINE NUMBER implements each requirement on the
+     professor's rubric.
+  3. What questions the professor is likely to ask during the lab defense and
+     how to answer them confidently using our actual code.
+
+--------------------------------------------------------------------------------
+PART 1: HOW THE SYSTEM WORKS END-TO-END (THE 60-SECOND PITCH)
+--------------------------------------------------------------------------------
+Our project implements a complete Enterprise E-Commerce to Business Intelligence
+(BI) Data Pipeline across 4 decoupled architectural nodes:
+
+1. NODE A (Track A - Storefront / Module 6):
+   - Customers browse 38 gadgets in our Storefront (`node_a_storefront/index.html`)
+     and click "Place Order & Ingest" (or we run the headless generator
+     `node_a_storefront/mock_order_generator.php`).
+   - Node A builds a Schema v1.1 JSON payload containing `transaction_id`,
+     `timestamp` (ISO-8601), `entity_id` (Customer ID), `monetary_value`,
+     `status`, `status_code` ("C"), and `line_items` (with both `unit_price`
+     and `unit_cost`).
+   - Node A sends this JSON via an HTTP `POST` request to Node B with the
+     security header `Authorization: Bearer itec116_secret_token`.
+
+2. NODE B (Track B - BI Ingestion & Staging / Module 7):
+   - Node B (`node_b_ingestion/server.php`) listens on port 5000.
+   - First, it authenticates the `Authorization: Bearer itec116_secret_token`
+     header (`node_b_ingestion/auth.php`). If invalid or missing, it blocks the
+     request with HTTP `401 Unauthorized`.
+   - Next, it validates the JSON payload and appends the raw, unedited JSON
+     into the SQLite staging table `staging_orders` (`data/warehouse.db`) with
+     `is_processed = 0`. This decouples fast order capture from heavy analytics.
+
+3. NODE C (Track C - ETL Pipeline & Star Schema / YOUR ROLE):
+   - Node C (`node_c_etl/etl_pipeline.php` and `node_c_etl/schema_setup.php`)
+     is the middleware transformation engine.
+   - EXTRACT: It queries `staging_orders WHERE is_processed = 0`.
+   - TRANSFORM:
+     a) Strips null/missing strings using resilient fallback defaults.
+     b) Standardizes timestamps into strict ISO-8601 format and derives an
+        hourly time key `date_id` (`YYYYMMDDHH`).
+     c) Casts data types explicitly (`(float)` for prices/totals, `(int)` for
+        quantities and date parts).
+     d) Calculates Net Margin:
+        `net_margin = monetary_value - total_product_cost - tax_amount`.
+     e) Maps raw status codes (`'C'` -> `'Completed'`, `'P'` -> `'Pending'`).
+   - LOAD (STAR SCHEMA):
+     Upserts descriptive attributes into 3 Dimension Tables (`Dim_Customer`,
+     `Dim_Time`, `Dim_Product`) and inserts quantitative measures into the
+     central Fact Table (`Fact_Sales`), then marks `staging_orders.is_processed = 1`.
+
+4. NODE D (Track D - QA Governance & Reconciliation Audit):
+   - Node D (`node_d_governance/audit_script.php` & `docs/KPI_DEFINITIONS.md`)
+     defines the 3 Pipeline Quality KPIs (ETL Processing Latency, Data Ingestion
+     Error Rate, and Row Count Reconciliation Accuracy).
+   - The audit script queries both Node B (`staging_orders`) and Node C
+     (`Fact_Sales`) to verify that `Total Orders Ingested == Total Fact_Sales Rows`
+     (100% match = 0% row loss) and reconciles total PHP (₱) revenue.
+
+
+================================================================================
+PART 2: TRACK C (YOUR ROLE: DATA INTEGRATION ARCHITECTS) — EXACT CODE LOCATOR
+================================================================================
+Rubric Allocation: 15 Points (Hands-on Lab Coding)
+Assigned Scope: Node C (ETL / Middleware Pipeline)
+
+Below is the exact location of every Track C requirement in the project:
+
+--------------------------------------------------------------------------------
+REQUIREMENT C-1:
+"Program the ETL script to convert raw JSON transactional payloads into
+ structured analytical tables."
+"Transformation Rules: Standardize date formats to ISO-8601, strip invalid/null
+ strings, calculate net margins/rates, and map raw status codes to
+ human-readable dimensions."
+--------------------------------------------------------------------------------
+WHERE TO FIND IT:
+1. Primary Standalone Script (CLI):
+   -> File: `node_c_etl/etl_pipeline.php` (Lines 1 to 176)
+2. Live Browser Trigger (used when clicking "Run ETL Pipeline Now" in the UI):
+   -> File: `node_b_ingestion/server.php` (Lines 75 to 175, inside `case 'run_etl':`)
+
+HOW EACH TRANSFORMATION RULE IS CODED IN `node_c_etl/etl_pipeline.php`:
+
+  * STEP 1 — EXTRACT UNPROCESSED JSON (Lines 35–55):
+    ```php
+    $stmt = $pdo->query("SELECT id, transaction_id, raw_payload FROM staging_orders WHERE is_processed = 0");
+    $unprocessed_rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    ```
+    And inside the loop (Line 55):
+    ```php
+    $data = json_decode($row['raw_payload'], true);
+    ```
+
+  * STEP 2 — STRIP INVALID/NULL STRINGS & FALLBACKS (Lines 61–65 & 105–107):
+    Uses `trim()` and PHP's null-coalescing operator (`??`) so missing/null fields
+    never corrupt the warehouse:
+    ```php
+    $custId = trim((string)($data['customer']['customer_id'] ?? ($data['customer']['id'] ?? ($data['entity_id'] ?? 'CUST-001'))));
+    $custName = trim((string)($data['customer']['customer_name'] ?? ($data['customer']['name'] ?? 'Juan Dela Cruz')));
+    $custEmail = trim((string)($data['customer']['email'] ?? 'juan.delacruz@example.com'));
+    ```
+
+  * STEP 3 — STANDARDIZE DATE FORMATS TO ISO-8601 (Lines 67–74):
+    Converts any incoming timestamp into a Unix epoch via `strtotime()`, formats
+    it to strict ISO-8601 (`date('c')`), and generates an hourly grain key
+    (`YYYYMMDDHH`) for `Dim_Time`:
+    ```php
+    $timestampStr = $data['timestamp'] ?? date('c');
+    $timestamp = strtotime($timestampStr) ?: time();
+    $iso8601_date = date('c', $timestamp); // e.g., 2026-10-22T20:30:00+08:00
+    $date_id = date('YmdH', $timestamp);   // e.g., 2026102220
+    ```
+
+  * STEP 4 — DATA TYPE CASTING (Lines 89–96, 108–111, 123–127):
+    JSON values can arrive as strings or mixed types, so Track C explicitly casts
+    them before database insertion:
+    - `(int)` for `year`, `month`, `day`, `hour`, `quantity`, `item_count`
+    - `(float)` for `unit_price`, `unit_cost`, `subtotal`, `tax_amount`,
+      `shipping_fee`, `monetary_value`
+
+  * STEP 5 — CALCULATE NET MARGIN (Lines 100–117 & 131–133):
+    First, the ETL loops over `line_items` to sum the total Cost of Goods Sold
+    (`$total_cost += ($pCost * $pQty)`).
+    Then it computes the exact net profit margin for the order:
+    ```php
+    $net_margin = round($monetaryValue - $total_cost - $taxAmount, 2);
+    ```
+    (Note: Since `monetary_value = subtotal + tax_amount + shipping_fee`,
+     subtracting `tax_amount` and `total_cost` leaves the true net operational
+     profit!).
+
+  * STEP 6 — MAP RAW STATUS CODES TO READABLE DIMENSIONS (Lines 128 & 135–137):
+    Converts raw single-character status codes into business-friendly labels:
+    ```php
+    $statusCode = trim((string)($data['status_code'] ?? 'C'));
+    $status_mapped = ($statusCode === 'C') ? 'Completed' : 'Pending';
+    ```
+
+--------------------------------------------------------------------------------
+REQUIREMENT C-2:
+"Star Schema / Aggregation Mapping: Map transactional data from Node A into a
+ core Fact Table (Fact_Sales) linked to Dimension Tables (Dim_Customer,
+ Dim_Time, Dim_Product/Service)."
+--------------------------------------------------------------------------------
+WHERE TO FIND IT:
+1. Star Schema DDL Creation Script:
+   -> File: `node_c_etl/schema_setup.php` (Lines 1 to 90)
+2. Star Schema Documentation:
+   -> File: `docs/DATA_SCHEMA.md`
+3. Star Schema Population (Upserting Dimensions & Loading Fact_Sales):
+   -> File: `node_c_etl/etl_pipeline.php` (Lines 76 to 166)
+4. Star Schema OLAP Aggregation Queries (JOINing Fact_Sales with Dim_* tables):
+   -> File: `node_b_ingestion/server.php` (Lines 230 to 325, inside `case 'bi_analytics':`)
+   -> File: `ui_bi_dashboard/queries.js` (Fetches and charts the Star Schema aggregations)
+
+HOW THE STAR SCHEMA IS STRUCTURED (`node_c_etl/schema_setup.php`):
+- Center of the Star (Fact Table):
+  `Fact_Sales`
+  * Primary Key: `fact_id` (AUTOINCREMENT)
+  * Degenerate Dimension: `transaction_id` (UNIQUE - prevents duplicate orders)
+  * Foreign Keys:
+    - `customer_id` -> references `Dim_Customer(customer_id)`
+    - `date_id`     -> references `Dim_Time(date_id)`
+  * Quantitative Measures:
+    `item_count`, `subtotal`, `tax_amount`, `shipping_fee`, `monetary_value`, `net_margin`
+  * Descriptive Dimensions:
+    `warehouse_location`, `status`
+
+- Points of the Star (Dimension Tables):
+  1. `Dim_Customer` (`customer_id` PK, `customer_name`, `email`)
+  2. `Dim_Product`  (`product_id` PK, `product_name`, `category`, `unit_price`, `unit_cost`)
+  3. `Dim_Time`     (`date_id` PK, `full_date`, `year`, `month`, `day`, `hour`)
+
+
+================================================================================
+PART 3: OTHER ROLES GUIDE (TRACKS A, B, AND D) — WHERE EVERYTHING IS STORED
+================================================================================
+
+--------------------------------------------------------------------------------
+TRACK A: E-COMMERCE ENGINEERS (Node A - Storefront) — 15 PTS
+--------------------------------------------------------------------------------
+Responsibilities:
+- Program the Module 6 E-Commerce application to generate transactional event
+  payloads carrying cart, tax, and item details.
+- Emit a syntactically valid JSON payload containing: `transaction_id`,
+  `timestamp`, `entity_id`, `monetary_value`, `status`, and `line_items`.
+
+WHERE TO FIND TRACK A's CODE:
+1. Storefront User Interface:
+   -> `node_a_storefront/index.html` (Catalog, Cart Drawer, Checkout Form, and
+      Activity 6 Pipeline Demo Monitor)
+   -> `node_a_storefront/styles.css` (Storefront Neo-Brutalist styling)
+2. Storefront Checkout & JSON Emitter (Browser):
+   -> `node_a_storefront/app.js`
+      - Product Catalog Array (38 items with `price` and `cost`): Lines 20–500
+      - Cart Calculation (`subtotal`, 12% `tax`, `total`): Lines 1072–1136
+      - `checkout()` Function (Builds Schema v1.1 JSON & sends POST request with
+        Bearer token to Node B): Lines 1138–1260
+3. Headless CLI Order Generator (Script):
+   -> `node_a_storefront/mock_order_generator.php` (Lines 1–136)
+      - Can be run from terminal (`php node_a_storefront/mock_order_generator.php`)
+        to automatically generate a random order and POST it via cURL to Node B.
+4. Master JSON Payload Contract / Sample:
+   -> `shared-json/track_payload.json` & `shared-json/mock_data.json`
+
+--------------------------------------------------------------------------------
+TRACK B: BI & DATA ENGINEERS (Node B - BI Ingestion & Staging) — 15 PTS
+--------------------------------------------------------------------------------
+Responsibilities:
+- Program the Module 7 BI Data Ingestion Endpoint and `staging_orders` table
+  to receive, authenticate (`Authorization: Bearer`), and log incoming
+  transactional feeds.
+
+WHERE TO FIND TRACK B's CODE:
+1. Staging Table Setup Script (DDL):
+   -> `node_b_ingestion/db_staging.php` (Lines 1–50)
+      - Creates `staging_orders` (`id`, `transaction_id`, `raw_payload`,
+        `received_at`, `is_processed`).
+2. Bearer Token Authentication Module:
+   -> `node_b_ingestion/auth.php` (Lines 1–38)
+      - Defines `BI_SECRET_TOKEN` (`Bearer itec116_secret_token`).
+3. Main BI Ingestion Listener Endpoint:
+   -> `node_b_ingestion/server.php`
+      - CORS & Header Setup: Lines 1–16
+      - Bearer Token Verification (`401 Unauthorized` if invalid): Lines 445–456
+      - HTTP Method Check (`405 Method Not Allowed` if not POST): Lines 458–463
+      - JSON Validation (`400 Bad Request` if malformed): Lines 465–473
+      - SQL `INSERT INTO staging_orders`: Lines 475–490
+4. API Documentation:
+   -> `docs/API_SPEC.md`
+
+--------------------------------------------------------------------------------
+TRACK D: QA & ANALYTICS GOVERNANCE (Node D - Governance & Audit) — 5 PTS
+--------------------------------------------------------------------------------
+Responsibilities:
+- Define 3 Data Pipeline Quality KPIs.
+- Audit the output of Track C to verify 100% row reconciliation (zero row loss)
+  and financial accuracy between Node B (`staging_orders`) and Node C (`Fact_Sales`).
+
+WHERE TO FIND TRACK D's CODE & DOCS:
+1. 3 Data Pipeline Quality KPIs Definition:
+   -> `docs/KPI_DEFINITIONS.md`
+      - KPI 1: ETL Processing Latency (Target: < 5 seconds per batch)
+      - KPI 2: Data Ingestion Error Rate (Formula: Failed Requests / Total Requests * 100; Target: 0%)
+      - KPI 3: Row Count Reconciliation Accuracy (Node A == Node B Staging == Node C Fact_Sales; Target: 100%)
+2. Automated Cross-Node Reconciliation Audit Script:
+   -> `node_d_governance/audit_script.php` (Lines 1–75)
+   -> Also live-callable in browser via `node_b_ingestion/server.php` (`case 'run_audit':`, Lines 178–228)
+3. Signed QA Audit Report Template:
+   -> `docs/QA_Audit_Template.md`
+
+--------------------------------------------------------------------------------
+BONUS TRACK E: VISUAL BI ANALYTICS DASHBOARD (`ui_bi_dashboard`)
+--------------------------------------------------------------------------------
+WHERE TO FIND IT:
+- `ui_bi_dashboard/BI_dashboard.html` (Executive Star Schema Dashboard UI)
+- `ui_bi_dashboard/queries.js` (Chart.js visualizations querying `Fact_Sales`,
+  `Dim_Time`, `Dim_Customer`, `Dim_Product`, and Warehouse split)
+- `ui_bi_dashboard/styles.css` (Neo-Brutalist styling & scroll animations)
+
+
+================================================================================
+PART 4: PROFESSOR ORAL DEFENSE Q&A CHEAT SHEET (QUESTIONS & ANSWERS)
+================================================================================
+
+--------------------------------------------------------------------------------
+QUESTIONS FOR TRACK C (YOUR ROLE — DATA INTEGRATION & ETL)
+--------------------------------------------------------------------------------
+
+Q1: "Track C, walk me through how your ETL pipeline converts raw JSON into the
+     Star Schema."
+ANSWER:
+"In `node_c_etl/etl_pipeline.php`, our ETL runs in 3 phases wrapped inside a
+PDO database transaction (`$pdo->beginTransaction()`):
+ 1. EXTRACT (Line 39): We select all rows from `staging_orders WHERE is_processed = 0`
+    and decode the `raw_payload` JSON string.
+ 2. TRANSFORM (Lines 60–137):
+    - We sanitize strings with `trim()` and apply null-coalescing fallbacks (`??`)
+      so missing fields don't break the load.
+    - We parse the timestamp with `strtotime()` and format it to strict ISO-8601
+      (`date('c')`), while generating an hourly key `date_id` (`YYYYMMDDHH`).
+    - We loop through `line_items`, explicitly casting `unit_price` and `unit_cost`
+      to `(float)` and `quantity` to `(int)`, and sum up the total Cost of Goods Sold.
+    - We calculate `net_margin = monetary_value - total_cost - tax_amount`.
+    - We map raw status code `'C'` to `'Completed'`.
+ 3. LOAD (Lines 85–163):
+    - We upsert `Dim_Customer`, `Dim_Time`, and `Dim_Product` using
+      `INSERT OR IGNORE` to avoid duplicate primary keys.
+    - We insert the aggregated order metrics into `Fact_Sales` and update
+      `staging_orders SET is_processed = 1`."
+
+Q2: "Why did you use `INSERT OR IGNORE` when inserting into the Dimension tables
+     and `Fact_Sales`?"
+ANSWER:
+"In dimensional modeling, many transactions share the same dimension values—for
+example, Customer `CUST-001` buying multiple times, or two orders happening in
+the same hour (`date_id = 2026102220`). Since `customer_id`, `product_id`, and
+`date_id` are Primary Keys in their Dimension tables, `INSERT OR IGNORE` ensures
+that if the dimension member already exists, SQLite keeps it without throwing a
+Unique Constraint error, and if it's new, it inserts it. In `Fact_Sales`,
+`transaction_id` is marked `UNIQUE`, so `INSERT OR IGNORE` also guarantees
+idempotency—running the ETL script twice will never duplicate a sale."
+
+Q3: "How did you calculate Net Margin in Track C?"
+ANSWER:
+"In `node_c_etl/etl_pipeline.php` (Lines 100–133), each item in `line_items`
+carries both `unit_price` (selling price) and `unit_cost` (base cost). During
+the loop, we accumulate `$total_cost += ($pCost * $pQty)`. Then at the order
+level, we compute:
+`net_margin = monetary_value - total_cost - tax_amount`
+Because `monetary_value` includes the 12% VAT (`tax_amount`), subtracting both
+the product base cost and the tax gives us the true net profit of the order."
+
+Q4: "What happens if an error occurs halfway through transforming a batch of
+     5 orders?"
+ANSWER:
+"We wrapped the entire loop in `$pdo->beginTransaction()` (Line 51) and
+`$pdo->commit()` (Line 168), with a `catch` block that calls `$pdo->rollBack()`
+(Line 173). That makes our ETL atomic—either the entire batch transforms
+cleanly, or it rolls back completely so `staging_orders` and `Fact_Sales` never
+fall out of sync."
+
+--------------------------------------------------------------------------------
+QUESTIONS FOR TRACK A (STOREFRONT & PAYLOAD)
+--------------------------------------------------------------------------------
+
+Q5: "Track A, how does your storefront emit the event payload when a customer
+     checks out?"
+ANSWER:
+"In `node_a_storefront/app.js` inside the `checkout()` function (Line 1145),
+we gather the items in the cart, calculate `subtotal`, 12% `tax_amount`, and
+`monetary_value`, and construct a JSON object adhering to Schema v1.1. It
+contains all required rubric fields: `transaction_id`, `timestamp` (generated
+via `new Date().toISOString()`), `entity_id`, `monetary_value`, `status`, and
+`line_items`. We then use the Fetch API (Line 1230) to send an HTTP `POST`
+request to `http://127.0.0.1:5000/server.php` with the `Authorization: Bearer
+itec116_secret_token` header."
+
+--------------------------------------------------------------------------------
+QUESTIONS FOR TRACK B (INGESTION & STAGING)
+--------------------------------------------------------------------------------
+
+Q6: "Track B, how do you secure your ingestion endpoint, and why do you store
+     the payload as raw text in `staging_orders`?"
+ANSWER:
+"In `node_b_ingestion/server.php` (Lines 445–456) and `auth.php`, we inspect the
+incoming HTTP headers using `getallheaders()`. If the `Authorization` header
+does not match `Bearer itec116_secret_token`, we immediately return `HTTP 401
+Unauthorized` and exit.
+If authenticated, we store the raw JSON string in `staging_orders.raw_payload`
+with `is_processed = 0`. Storing the raw JSON in a staging table follows industry
+best practice (ELT/ETL staging pattern): it makes ingestion super fast and
+creates an immutable audit log so we never lose incoming orders even if schema
+rules change later."
+
+--------------------------------------------------------------------------------
+QUESTIONS FOR TRACK D (GOVERNANCE & QA AUDIT)
+--------------------------------------------------------------------------------
+
+Q7: "Track D, how do you prove there is 0% data loss across the pipeline?"
+ANSWER:
+"In `node_d_governance/audit_script.php`, we query `COUNT(*)` from Node B's
+`staging_orders` table and compare it against `COUNT(*)` from Node C's
+`Fact_Sales` table once ETL has run. Because every order ingested into
+`staging_orders` maps 1-to-1 to a transaction in `Fact_Sales`, when
+`total_ingested === total_facts`, our audit script outputs `[PASS] 100% Row
+Match. Zero data loss detected`, and reconciles the total PHP revenue."
+
+
+================================================================================
+PART 5: HOW TO RUN & DEMO THE PROJECT LIVE FOR THE PROFESSOR
+================================================================================
+
+1. START THE SERVER (Terminal in project root `D:\E-Commerce\E-commerce_Lab6`):
+   ```powershell
+   php -S 127.0.0.1:5000 -t node_b_ingestion
+   ```
+
+2. OPEN THE STOREFRONT (Node A):
+   Open `node_a_storefront/index.html` (via Live Server or browser).
+   - Show the professor the storefront catalog, add a couple of gadgets to the
+     cart, select a Customer & Warehouse Hub, and click "Place Order & Ingest".
+
+3. SWITCH TO THE "ACTIVITY DEMO" TAB (Top Navbar):
+   - Show the professor the live **Latest Emitted JSON Payload** (Track A).
+   - Click **"Staging"** in the SQLite Warehouse Inspector to show the raw order
+     sitting in `staging_orders` with `PENDING ETL` (`is_processed = 0`) (Track B).
+   - Click **"Run ETL Pipeline Now"** (Track C - Your Role!):
+     Watch the status change to `PROCESSED` and switch to the **"Fact_Sales"**
+     tab to show the transformed record with calculated `net_margin` and
+     `Completed` status!
+   - Click **"Run QA Reconciliation Audit"** (Track D):
+     Show the green terminal output proving **100% Row Match (0% Data Loss)**.
+
+4. OPEN THE EXECUTIVE BI ANALYTICS DASHBOARD:
+   - Click **"BI Analytics"** in the navbar (opens `ui_bi_dashboard/BI_dashboard.html`).
+   - Show the live Star Schema charts (`Dim_Time` hourly trend, Warehouse split,
+     `Dim_Customer` profit leaderboard, `Dim_Product` price vs. cost spread, and
+     the live `Fact_Sales` OLAP ledger).
+================================================================================
