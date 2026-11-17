@@ -1,40 +1,40 @@
-/**
- * ITEC 116 Activity 6: Visual BI Analytics Engine (queries.js)
- * Theme: Neo-Brutalist Graphic Visualizations & Star Schema OLAP
- */
+
+
+
+
 
 const BI_API_ENDPOINT = 'http://127.0.0.1:5000/server.php?action=bi_analytics';
 
-// Chart instances
+
 let warehouseChartInstance = null;
 let timeTrendChartInstance = null;
 let customerChartInstance = null;
 let productChartInstance = null;
 
-// Intersection Observer for card summoning
+
 let summonObserver = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initial icon render
+
     if (window.lucide) {
         lucide.createIcons();
     }
 
-    // Initialize summoning scroll animation
+
     initSummonObserver();
 
-    // Initial data fetch
+
     fetchBIAnalytics();
-    
-    // Auto refresh every 10 seconds for live presentation demos
+
+
     setInterval(() => {
         fetchBIAnalytics(true);
     }, 10000);
 });
 
-/**
- * Initialize scroll reveal summoning animation with staggered delays
- */
+
+
+
 function initSummonObserver() {
     if ('IntersectionObserver' in window) {
         summonObserver = new IntersectionObserver((entries) => {
@@ -42,7 +42,7 @@ function initSummonObserver() {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('summoned');
                 } else {
-                    // Reset when scrolled away to summon dynamically upon revisit
+
                     entry.target.classList.remove('summoned');
                 }
             });
@@ -52,21 +52,21 @@ function initSummonObserver() {
         });
     }
 
-    // Stagger metric cards
+
     const metricCards = document.querySelectorAll('.metrics-row .summon-card');
     metricCards.forEach((card, idx) => {
         card.style.setProperty('--summon-delay', `${idx * 75}ms`);
         if (summonObserver) summonObserver.observe(card);
     });
 
-    // Stagger main & secondary chart cards
+
     const chartCards = document.querySelectorAll('.charts-grid-main .summon-card, .charts-grid-secondary .summon-card');
     chartCards.forEach((card, idx) => {
         card.style.setProperty('--summon-delay', `${(idx % 2) * 90}ms`);
         if (summonObserver) summonObserver.observe(card);
     });
 
-    // Header and ledger
+
     const header = document.querySelector('.bi-header.summon-card');
     if (header && summonObserver) summonObserver.observe(header);
 
@@ -118,7 +118,7 @@ async function fetchBIAnalytics(isSilent = false) {
     }
 }
 
-// 1. Update Executive KPI Cards
+
 function updateKPICards(kpis) {
     if (!kpis) return;
 
@@ -158,12 +158,12 @@ function updateKPICards(kpis) {
     if (aovEl) aovEl.innerText = `₱${aov.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
 }
 
-// 2. Chart: Sales by Fulfillment Warehouse (Dim_Warehouse ✕ Fact_Sales)
+
 function renderWarehouseChart(warehouseData) {
     const ctx = document.getElementById('chart-warehouse')?.getContext('2d');
     if (!ctx || !warehouseData) return;
 
-    // Filter out null locations
+
     const cleanData = warehouseData.filter(w => w.warehouse_location && w.revenue > 0);
     const labels = cleanData.map(w => w.warehouse_location.replace(/\s*\(.*?\)/, ''));
     const revenues = cleanData.map(w => w.revenue);
@@ -211,7 +211,7 @@ function renderWarehouseChart(warehouseData) {
     });
 }
 
-// 3. Chart: Hourly Revenue & Margin Trend (Dim_Time ✕ Fact_Sales)
+
 function renderTimeTrendChart(timeData) {
     const ctx = document.getElementById('chart-time-trend')?.getContext('2d');
     if (!ctx || !timeData) return;
@@ -274,7 +274,7 @@ function renderTimeTrendChart(timeData) {
     });
 }
 
-// 4. Chart: Customer Spend Leaderboard (Dim_Customer ✕ Fact_Sales)
+
 function renderCustomerChart(customerData) {
     const ctx = document.getElementById('chart-customers')?.getContext('2d');
     if (!ctx || !customerData) return;
@@ -343,7 +343,7 @@ function renderCustomerChart(customerData) {
     });
 }
 
-// 5. Chart: Dimension Product Margins (Dim_Product)
+
 function renderProductChart(productsData) {
     const ctx = document.getElementById('chart-products')?.getContext('2d');
     if (!ctx || !productsData) return;
@@ -411,7 +411,7 @@ function renderProductChart(productsData) {
     });
 }
 
-// 6. Populate Recent Star Schema Fact_Sales Ledger
+
 function renderLedgerTable(recentSales) {
     const tbody = document.getElementById('ledger-tbody');
     if (!tbody || !recentSales) return;

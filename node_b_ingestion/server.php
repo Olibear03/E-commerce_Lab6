@@ -1,11 +1,10 @@
 <?php
-// node_b_ingestion/server.php
+
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-// Handle CORS preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -15,7 +14,6 @@ $db_path = __DIR__ . '/../data/warehouse.db';
 $secret_token = "Bearer itec116_secret_token";
 $action = $_GET['action'] ?? ($_POST['action'] ?? null);
 
-// Initialize DB connection
 try {
     $pdo = new PDO("sqlite:" . $db_path);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -25,31 +23,25 @@ try {
     exit;
 }
 
-// -------------------------------------------------------------
-// DEMO ACTION DISPATCHER (For interactive Activity 6 live demo)
-// -------------------------------------------------------------
 if ($action) {
     switch ($action) {
         case 'status':
             try {
-                // Staging counts
+
                 $stmt = $pdo->query("SELECT COUNT(*) as total FROM staging_orders");
                 $total_staged = (int)$stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
                 $stmt = $pdo->query("SELECT COUNT(*) as pending FROM staging_orders WHERE is_processed = 0");
                 $pending = (int)$stmt->fetch(PDO::FETCH_ASSOC)['pending'];
 
-                // Fact Sales counts
                 $stmt = $pdo->query("SELECT COUNT(*) as total_facts, COALESCE(SUM(monetary_value), 0) as total_rev FROM Fact_Sales");
                 $fact_data = $stmt->fetch(PDO::FETCH_ASSOC);
                 $total_facts = (int)$fact_data['total_facts'];
                 $total_revenue = (float)$fact_data['total_rev'];
 
-                // Recent Staging Orders
                 $stmt = $pdo->query("SELECT id, transaction_id, received_at, is_processed, raw_payload FROM staging_orders ORDER BY id DESC LIMIT 6");
                 $recent_staging = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // Recent Fact Sales
                 $stmt = $pdo->query("SELECT fact_id, transaction_id, customer_id, monetary_value, net_margin, status FROM Fact_Sales ORDER BY fact_id DESC LIMIT 6");
                 $recent_facts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -72,15 +64,9 @@ if ($action) {
             }
             exit;
 
-        // ====================================================================
-        // TRACK C LIVE WEB TRIGGER: ETL PIPELINE & STAR SCHEMA MAPPING
-        // [RUBRIC REQUIREMENT - TASK 2: ETL Pipeline & Dimensional Modeling]
-        // Mirrors `node_c_etl/etl_pipeline.php` so the ETL pipeline can be
-        // triggered directly from the Storefront Demo UI button.
-        // ====================================================================
         case 'run_etl':
             try {
-                // PHASE 1 (EXTRACT): Fetch unprocessed rows from Node B staging table
+
                 $stmt = $pdo->query("SELECT id, transaction_id, raw_payload FROM staging_orders WHERE is_processed = 0");
                 $unprocessed = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $count = count($unprocessed);
@@ -90,24 +76,19 @@ if ($action) {
                     foreach ($unprocessed as $row) {
                         $data = json_decode($row['raw_payload'], true);
 
-                        // PHASE 2 (TRANSFORM - Null Fallback & String Cleansing)
                         $custId = $data['customer']['customer_id'] ?? ($data['customer']['id'] ?? ($data['entity_id'] ?? 'CUST-001'));
                         $custName = $data['customer']['customer_name'] ?? ($data['customer']['name'] ?? 'Juan Dela Cruz');
                         $custEmail = $data['customer']['email'] ?? 'juan.delacruz@example.com';
 
-                        // PHASE 3 (LOAD DIMENSIONS):
-                        // 1. Dim_Customer
                         $stmt_cust = $pdo->prepare("INSERT OR IGNORE INTO Dim_Customer (customer_id, customer_name, email) VALUES (?, ?, ?)");
                         $stmt_cust->execute([$custId, $custName, $custEmail]);
 
-                        // 2. Dim_Time (Standardize to ISO-8601 & Hourly Date Key YYYYMMDDHH)
                         $timestampStr = $data['timestamp'] ?? date('c');
                         $timestamp = strtotime($timestampStr) ?: time();
                         $date_id = date('YmdH', $timestamp);
                         $stmt_time = $pdo->prepare("INSERT OR IGNORE INTO Dim_Time (date_id, full_date, year, month, day, hour) VALUES (?, ?, ?, ?, ?, ?)");
                         $stmt_time->execute([$date_id, date('c', $timestamp), (int)date('Y', $timestamp), (int)date('m', $timestamp), (int)date('d', $timestamp), (int)date('H', $timestamp)]);
 
-                        // 3. Dim_Product & Accumulate Base Cost for Net Margin Calculation
                         $total_cost = 0;
                         $stmt_prod = $pdo->prepare("INSERT OR IGNORE INTO Dim_Product (product_id, product_name, category, unit_price, unit_cost) VALUES (?, ?, ?, ?, ?)");
                         $lineItems = $data['line_items'] ?? [];
@@ -123,8 +104,6 @@ if ($action) {
                             $total_cost += ($pCost * $pQty);
                         }
 
-                        // PHASE 4 (LOAD FACT TABLE - Fact_Sales):
-                        // Explicit data type casting ((float) and (int)), Net Margin math, and Status Code mapping ('C' -> 'Completed')
                         $subtotal = (float)($data['totals']['subtotal'] ?? 0);
                         $taxAmount = (float)($data['totals']['tax_amount'] ?? 0);
                         $shippingFee = (float)($data['totals']['shipping_fee'] ?? 0);
@@ -137,8 +116,8 @@ if ($action) {
                         $status_mapped = ($statusCode === 'C') ? 'Completed' : 'Pending';
 
                         $stmt_fact = $pdo->prepare("
-                            INSERT OR IGNORE INTO Fact_Sales 
-                            (transaction_id, customer_id, date_id, warehouse_location, item_count, subtotal, tax_amount, shipping_fee, monetary_value, net_margin, status) 
+                            INSERT OR IGNORE INTO Fact_Sales
+                            (transaction_id, customer_id, date_id, warehouse_location, item_count, subtotal, tax_amount, shipping_fee, monetary_value, net_margin, status)
                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         ");
                         $stmt_fact->execute([
@@ -155,7 +134,6 @@ if ($action) {
                             $status_mapped
                         ]);
 
-                        // Mark staging row as processed (is_processed = 1)
                         $stmt_update = $pdo->prepare("UPDATE staging_orders SET is_processed = 1 WHERE id = ?");
                         $stmt_update->execute([$row['id']]);
                     }
@@ -176,16 +154,11 @@ if ($action) {
             }
             exit;
 
-        // ====================================================================
-        // TRACK D LIVE WEB TRIGGER: QA RECONCILIATION AUDIT
-        // [RUBRIC REQUIREMENT - TASK 3: BI Governance & Pipeline Audit]
-        // Mirrors `node_d_governance/audit_script.php` to verify 0% row loss.
-        // ====================================================================
         case 'run_audit':
             try {
                 $stmt_b = $pdo->query("SELECT COUNT(*) as total_rows, is_processed FROM staging_orders GROUP BY is_processed");
                 $staging_stats = $stmt_b->fetchAll(PDO::FETCH_ASSOC);
-                
+
                 $total_ingested = 0;
                 $total_processed = 0;
                 foreach($staging_stats as $stat) {
@@ -229,9 +202,9 @@ if ($action) {
 
         case 'bi_analytics':
             try {
-                // 1. High-Level Financial & Operational KPIs
+
                 $stmt = $pdo->query("
-                    SELECT 
+                    SELECT
                         COUNT(DISTINCT transaction_id) as total_orders,
                         COALESCE(SUM(monetary_value), 0) as total_revenue,
                         COALESCE(SUM(subtotal), 0) as total_subtotal,
@@ -248,20 +221,18 @@ if ($action) {
                 $margin = (float)$kpis['total_net_margin'];
                 $kpis['margin_rate'] = $rev > 0 ? round(($margin / $rev) * 100, 2) : 0;
 
-                // 2. Sales by Fulfillment Warehouse (Dimension: warehouse_location)
                 $stmt = $pdo->query("
-                    SELECT 
-                        warehouse_location, 
-                        COUNT(*) as order_count, 
+                    SELECT
+                        warehouse_location,
+                        COUNT(*) as order_count,
                         ROUND(SUM(monetary_value), 2) as revenue,
                         ROUND(SUM(net_margin), 2) as margin
-                    FROM Fact_Sales 
-                    GROUP BY warehouse_location 
+                    FROM Fact_Sales
+                    GROUP BY warehouse_location
                     ORDER BY revenue DESC
                 ");
                 $by_warehouse = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // 3. Product Catalog Dimensions (Dim_Product)
                 $stmt = $pdo->query("
                     SELECT product_id, product_name, category, unit_price, unit_cost
                     FROM Dim_Product
@@ -269,13 +240,12 @@ if ($action) {
                 ");
                 $products_dim = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // 4. Sales by Customer Dimension (Dim_Customer)
                 $stmt = $pdo->query("
-                    SELECT 
-                        c.customer_id, 
-                        c.customer_name, 
-                        c.email, 
-                        COUNT(f.fact_id) as order_count, 
+                    SELECT
+                        c.customer_id,
+                        c.customer_name,
+                        c.email,
+                        COUNT(f.fact_id) as order_count,
                         ROUND(COALESCE(SUM(f.monetary_value), 0), 2) as total_spent,
                         ROUND(COALESCE(SUM(f.net_margin), 0), 2) as total_profit
                     FROM Dim_Customer c
@@ -285,9 +255,8 @@ if ($action) {
                 ");
                 $by_customer = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // 5. Time Trend Aggregation (Dim_Time)
                 $stmt = $pdo->query("
-                    SELECT 
+                    SELECT
                         t.date_id,
                         t.full_date,
                         t.hour,
@@ -303,9 +272,8 @@ if ($action) {
                 ");
                 $by_time = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // 6. Recent Transaction Log with Star Schema Foreign Keys
                 $stmt = $pdo->query("
-                    SELECT 
+                    SELECT
                         f.fact_id,
                         f.transaction_id,
                         f.customer_id,
@@ -338,7 +306,7 @@ if ($action) {
             exit;
 
         case 'mock_order':
-            // Generate dynamic random mock order
+
             $customers = [
                 ["id" => "CUST-001", "name" => "Juan Dela Cruz", "email" => "juan.delacruz@example.com"],
                 ["id" => "CUST-002", "name" => "Maria Clara", "email" => "maria.clara@example.com"],
@@ -441,11 +409,6 @@ if ($action) {
     }
 }
 
-// -------------------------------------------------------------
-// STANDARD TRACK B INGESTION ENDPOINT (Original API Spec)
-// -------------------------------------------------------------
-
-// 1. Validate Authentication Headers
 $headers = getallheaders();
 $auth_header = $headers['Authorization'] ?? ($headers['authorization'] ?? '');
 
@@ -455,14 +418,12 @@ if ($auth_header !== $secret_token) {
     exit;
 }
 
-// 2. Ensure it's a POST request
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(["error" => "Method Not Allowed. Use POST."]);
     exit;
 }
 
-// 3. Read the Raw JSON Payload
 $raw_payload = file_get_contents("php://input");
 $data = json_decode($raw_payload, true);
 
@@ -472,7 +433,6 @@ if (!$data || !isset($data['transaction_id'])) {
     exit;
 }
 
-// 4. Insert into Staging Database
 try {
     $stmt = $pdo->prepare("INSERT INTO staging_orders (transaction_id, raw_payload) VALUES (:tid, :payload)");
     $stmt->execute([
@@ -480,7 +440,6 @@ try {
         ':payload' => $raw_payload
     ]);
 
-    // Success Response
     http_response_code(201);
     echo json_encode([
         "status" => "success",

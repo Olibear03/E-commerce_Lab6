@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GADGETSTYLE | Modern Tech & Hardware Storefront (ITEC 116 Demo)</title>
-    <!-- Lucide Icons CDN -->
+
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- ======================================================================
-         TOP BAR & NAVBAR (Matches the uploaded Memphis/Graphic style)
-         ====================================================================== -->
+
+
+
     <header class="site-header">
         <div class="brand-block" onclick="navigateTo('home')">
             <div class="brand-hamburger">
@@ -52,20 +52,20 @@
         </nav>
     </header>
 
-    <!-- VIEW CONTAINER -->
+
     <div class="view-container">
 
-        <!-- ==================================================================
-             PAGE 1: STOREFRONT HOMEPAGE
-             ================================================================== -->
+
+
+
         <main class="view-page active" id="page-home">
-            
-            <!-- HERO SECTION (Neo-Brutalist Memphis Split Layout) -->
+
+
             <section class="hero-section" id="hero-section">
-                
-                <!-- Left Hero (White background, Outline Heading, Geometric accents) -->
+
+
                 <div class="hero-left">
-                    <!-- Geometric accents -->
+
                     <div class="geo-shape geo-triangle-striped"></div>
                     <div class="geo-shape geo-triangle-cluster">
                         <div class="cluster-row">
@@ -81,7 +81,7 @@
                         </div>
                     </div>
 
-                    <!-- Typography Content -->
+
                     <div class="hero-headings">
                         <h1 class="hero-title-outline">Online</h1>
                         <h1 class="hero-title-solid">Shopping</h1>
@@ -103,7 +103,7 @@
                         </button>
                     </div>
 
-                    <!-- Bottom Memphis indicators -->
+
                     <div class="hero-bottom-accents">
                         <div class="slider-dots" style="cursor: pointer;">
                             <span class="slider-dot" onclick="setHeroSlide(0)" title="Spider-Punk Mask"></span>
@@ -117,7 +117,7 @@
                     </div>
                 </div>
 
-                <!-- Right Hero (Sky Blue panel, Featured Gadget showcase, Floating overlays) -->
+
                 <div class="hero-right">
                     <div class="dot-grid"></div>
                     <div class="floating-black-wedge"></div>
@@ -133,10 +133,10 @@
                         </div>
                     </div>
 
-                    <!-- Featured Hero Gadget Card (Hover arrows to change slides, pause on hover) -->
+
                     <div class="hero-showcase" onmouseenter="pauseHeroTimer()" onmouseleave="resumeHeroTimer()">
                         <div class="hero-main-card">
-                            <!-- Hover Navigation Arrows -->
+
                             <button class="hero-nav-arrow prev" onclick="prevHeroSlide(event)" title="Previous Gadget" aria-label="Previous Slide">
                                 <i data-lucide="chevron-left" style="width: 20px; height: 20px;"></i>
                             </button>
@@ -165,7 +165,7 @@
                 </div>
             </section>
 
-            <!-- MARQUEE FEATURE TICKER -->
+
             <div class="feature-ticker">
                 <div class="ticker-track">
                     <span class="ticker-item"><span class="dot">●</span> 100% AUTHENTIC GADGETS</span>
@@ -179,9 +179,9 @@
                 </div>
             </div>
 
-            <!-- ==============================================================
-                 1. FEATURED PRODUCTS SECTION (Spotlight Drops)
-                 ============================================================== -->
+
+
+
             <section class="section-wrapper" id="featured-section">
                 <div class="section-header summon-header">
                     <div class="section-title-group">
@@ -199,13 +199,13 @@
                 </div>
 
                 <div class="featured-grid" id="featured-grid">
-                    <!-- Rendered dynamically via app.js -->
+
                 </div>
             </section>
 
-            <!-- ==============================================================
-                 2. CATEGORIES SECTION (Interactive Department Browser)
-                 ============================================================== -->
+
+
+
             <section class="section-wrapper" id="categories-section">
                 <div class="section-header summon-header">
                     <div class="section-title-group">
@@ -219,13 +219,13 @@
                 </div>
 
                 <div class="categories-grid" id="categories-grid">
-                    <!-- Rendered dynamically via app.js -->
+
                 </div>
             </section>
 
-            <!-- ==============================================================
-                 3. ALL PRODUCTS CATALOG SECTION (Full Inventory)
-                 ============================================================== -->
+
+
+
             <section class="catalog-section" id="products-section">
                 <div class="catalog-header summon-header">
                     <div class="catalog-title-group">
@@ -252,26 +252,26 @@
                     </div>
                 </div>
 
-                <!-- Category Filter Pills -->
+
                 <div class="category-pills" id="category-pills-bar">
-                    <!-- Populated dynamically via app.js -->
+
                 </div>
 
-                <!-- Dynamic Products Grid -->
+
                 <div class="products-grid" id="products-grid">
-                    <!-- Rendered dynamically by app.js -->
+
                 </div>
             </section>
         </main>
 
 
-        <!-- ==================================================================
-             PAGE 2: ACTIVITY DEMO / ENTERPRISE BI PIPELINE MONITOR
-             ================================================================== -->
+
+
+
         <main class="view-page" id="page-demo">
             <section class="demo-dashboard-section">
-                
-                <!-- Demo Header Banner -->
+
+
                 <div class="demo-header-banner">
                     <div class="demo-banner-title">
                         <h1>
@@ -291,10 +291,10 @@
                     </div>
                 </div>
 
-                <!-- 4-Stage Architectural Flow Chart -->
+
                 <div class="pipeline-flow-bar">
                     <div class="pipeline-nodes-wrapper">
-                        <!-- Node A -->
+
                         <div class="pipeline-node-card active" id="card-node-a">
                             <div class="node-header">
                                 <span class="node-tag">
@@ -307,7 +307,7 @@
                             <p class="node-desc">Emits Schema v1.1 JSON transactional payloads on checkout.</p>
                         </div>
 
-                        <!-- Node B -->
+
                         <div class="pipeline-node-card" id="card-node-b">
                             <div class="node-header">
                                 <span class="node-tag">
@@ -320,7 +320,7 @@
                             <p class="node-desc">Authenticates Bearer token & logs raw JSON to SQLite <code>staging_orders</code>.</p>
                         </div>
 
-                        <!-- Node C -->
+
                         <div class="pipeline-node-card" id="card-node-c">
                             <div class="node-header">
                                 <span class="node-tag">
@@ -333,7 +333,7 @@
                             <p class="node-desc">Transforms timestamps (ISO-8601), loads Star Schema (Facts + Dims).</p>
                         </div>
 
-                        <!-- Node D -->
+
                         <div class="pipeline-node-card" id="card-node-d">
                             <div class="node-header">
                                 <span class="node-tag">
@@ -348,7 +348,7 @@
                     </div>
                 </div>
 
-                <!-- Interactive Demo Control Deck -->
+
                 <div class="demo-control-deck">
                     <button class="btn-demo-action primary" onclick="generateSingleMockOrder()">
                         <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
@@ -376,7 +376,7 @@
                     </a>
                 </div>
 
-                <!-- 4 Rubric KPIs Summary Cards -->
+
                 <div class="kpi-cards-grid">
                     <div class="kpi-card">
                         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
@@ -423,10 +423,10 @@
                     </div>
                 </div>
 
-                <!-- Dual Column Live Inspector -->
+
                 <div class="inspector-dual-grid">
-                    
-                    <!-- Left: Latest Emitted JSON Payload -->
+
+
                     <div class="inspector-card">
                         <div class="inspector-card-header">
                             <span class="inspector-card-title">
@@ -439,11 +439,11 @@
                             </button>
                         </div>
                         <div class="code-viewer-box" id="json-payload-viewer">
-                            <!-- Populated with highlighted JSON -->
+
                         </div>
                     </div>
 
-                    <!-- Right: Live Database Table Viewer -->
+
                     <div class="inspector-card">
                         <div class="inspector-card-header">
                             <span class="inspector-card-title">
@@ -456,12 +456,12 @@
                             </div>
                         </div>
                         <div class="table-viewer-box" id="db-table-viewer">
-                            <!-- Table populated via JS -->
+
                         </div>
                     </div>
                 </div>
 
-                <!-- Live Track D Reconciliation Terminal Output -->
+
                 <div class="inspector-card">
                     <div class="inspector-card-header">
                         <span class="inspector-card-title">
@@ -479,11 +479,11 @@ Click 'Run QA Reconciliation Audit' to inspect live reconciliation status...
         </main>
     </div>
 
-    <!-- ======================================================================
-         CART SLIDE-OVER DRAWER (Checkout Experience)
-         ====================================================================== -->
+
+
+
     <div class="cart-drawer-overlay" id="cart-overlay" onclick="toggleCart(false)"></div>
-    
+
     <aside class="cart-drawer" id="cart-drawer">
         <div class="cart-drawer-header">
             <h2 class="cart-drawer-title">Shopping Cart</h2>
@@ -494,10 +494,10 @@ Click 'Run QA Reconciliation Audit' to inspect live reconciliation status...
 
         <div class="cart-drawer-body">
             <ul class="cart-items-list" id="cart-items">
-                <!-- Populated via app.js -->
+
             </ul>
 
-            <!-- Checkout Order Configuration -->
+
             <div class="checkout-metadata-box" id="checkout-options-box">
                 <div class="meta-field">
                     <label for="customer-select">Customer Profile (Node A Entity):</label>
@@ -555,9 +555,9 @@ Click 'Run QA Reconciliation Audit' to inspect live reconciliation status...
         </div>
     </aside>
 
-    <!-- ======================================================================
-         FOOTER (Matches the reference image)
-         ====================================================================== -->
+
+
+
     <footer class="site-footer">
         <a href="javascript:void(0)" class="footer-url" onclick="navigateTo('home')">www.gadgetstyle.ph</a>
         <div class="footer-icons">
@@ -565,16 +565,16 @@ Click 'Run QA Reconciliation Audit' to inspect live reconciliation status...
             <a href="#location" class="footer-icon-circle" title="Manila Warehouse"><i data-lucide="map-pin"></i></a>
             <a href="tel:+63900000000" class="footer-icon-circle" title="Phone Support"><i data-lucide="phone"></i></a>
             <a href="javascript:void(0)" onclick="toggleCart(true)" class="footer-icon-circle" title="Cart"><i data-lucide="shopping-bag"></i></a>
-        </div>
++        </div>
     </footer>
 
-    <!-- TOAST NOTIFICATION -->
+
     <div class="toast-notice" id="toast-notice">
         <div id="toast-message">Notification message here</div>
         <button class="toast-btn-action" id="toast-action-btn" onclick="navigateTo('demo')">View Demo</button>
     </div>
 
-    <!-- MAIN JAVASCRIPT LOGIC -->
+
     <script src="app.js"></script>
 </body>
 </html>

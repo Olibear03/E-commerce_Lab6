@@ -1,9 +1,9 @@
-/**
- * GADGETSTYLE - Neo-Brutalist E-Commerce Storefront & BI Pipeline Cockpit
- * ITEC 116 Activity 6 (Node A Storefront + Activity Demo Controller)
- */
 
-// Force scroll to top on every fresh page load or refresh
+
+
+
+
+
 if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
@@ -16,9 +16,9 @@ if (window.location.hash) {
 const API_BASE = 'http://127.0.0.1:5000/server.php';
 const SECRET_TOKEN = 'Bearer itec116_secret_token';
 
-// 1. Comprehensive Gadget Catalog (32 Local Product Assets)
+
 const PRODUCTS = [
-    // --- HERO & FEATURED SPOTLIGHT PRODUCTS ---
+
     {
         id: "P026",
         name: "Spider-Punk Wearable Mask",
@@ -59,7 +59,7 @@ const PRODUCTS = [
         isFeatured: true
     },
 
-    // --- MICE ---
+
     {
         id: "P001",
         name: "Hamster Wireless Mouse",
@@ -98,7 +98,7 @@ const PRODUCTS = [
         rating: 4.9
     },
 
-    // --- KEYBOARDS ---
+
     {
         id: "P003",
         name: "Moon Cherry Mechanical Keyboard",
@@ -151,7 +151,7 @@ const PRODUCTS = [
         isFeatured: true
     },
 
-    // --- DESK ACCESSORIES & CHARGERS ---
+
     {
         id: "P007",
         name: "Cyberpunk Neon XXL Desk Mat",
@@ -225,7 +225,7 @@ const PRODUCTS = [
         rating: 4.7
     },
 
-    // --- HUBS & DOCKS ---
+
     {
         id: "P011",
         name: "Multiport 7-in-1 USB-C Hub",
@@ -251,7 +251,7 @@ const PRODUCTS = [
         rating: 4.8
     },
 
-    // --- AUDIO & HEADSETS ---
+
     {
         id: "P012",
         name: "Pro Surround 7.1 Studio Headset",
@@ -315,7 +315,7 @@ const PRODUCTS = [
         rating: 4.8
     },
 
-    // --- PC HARDWARE & CASES ---
+
     {
         id: "P017",
         name: "Cyberpunk Matrix PC Case",
@@ -354,7 +354,7 @@ const PRODUCTS = [
         rating: 4.9
     },
 
-    // --- CHAIRS & BATTLESTATION ---
+
     {
         id: "P009",
         name: "Cyberpunk Edition Gaming Chair",
@@ -368,7 +368,7 @@ const PRODUCTS = [
         rating: 5.0
     },
 
-    // --- SMARTPHONES & TECH ---
+
     {
         id: "P022",
         name: "Red Magic 9 Pro Gaming Phone",
@@ -419,7 +419,7 @@ const PRODUCTS = [
         rating: 5.0
     },
 
-    // --- WATCHES & WEARABLES ---
+
     {
         id: "P021",
         name: "Omnitrix FX Deluxe Gadget",
@@ -509,7 +509,7 @@ const PRODUCTS = [
     }
 ];
 
-// 2. HERO FEATURED PRODUCTS (Slide 1: Spideymask, Slide 2: Omnitrix, Slide 3: Gaming Chair, Slide 4: Geto Mug)
+
 const HERO_SLIDES = [
     {
         title: "Spider-Punk Mask",
@@ -545,7 +545,7 @@ const HERO_SLIDES = [
     }
 ];
 
-// Application State
+
 let cart = [];
 let currentCategory = 'all';
 let currentTableTab = 'staging';
@@ -554,11 +554,11 @@ let pipelineCache = null;
 let heroIndex = 0;
 let heroTimer = null;
 
-// ============================================================================
-// INITIALIZATION
-// ============================================================================
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Immediately ensure user is at the top of the page
+
     window.scrollTo(0, 0);
 
     renderFeaturedProducts();
@@ -570,19 +570,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavSlider();
     setupScrollSpy();
 
-    // Start Hero Carousel
+
     setHeroSlide(0);
     heroTimer = setInterval(() => {
         let nextIdx = (heroIndex + 1) % HERO_SLIDES.length;
         setHeroSlide(nextIdx);
     }, 4500);
 
-    // Initial icon creation
+
     if (window.lucide) {
         lucide.createIcons();
     }
 
-    // Auto-refresh pipeline metrics every 15 seconds if on demo tab
+
     setInterval(() => {
         const demoPage = document.getElementById('page-demo');
         if (demoPage && demoPage.classList.contains('active')) {
@@ -590,15 +590,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 15000);
 
-    // Double check scroll to top after any dynamic elements render
+
     setTimeout(() => {
         window.scrollTo(0, 0);
     }, 20);
 });
 
-// ============================================================================
-// HERO CAROUSEL CONTROLLER (Dynamically updates image, title, subtitle & pill)
-// ============================================================================
+
+
+
 function setHeroSlide(idx) {
     heroIndex = idx;
     const slide = HERO_SLIDES[heroIndex];
@@ -657,9 +657,9 @@ function resumeHeroTimer() {
     }, 4500);
 }
 
-// ============================================================================
-// NAVBAR SLIDER & ACTIVE HIGHLIGHT CONTROLLER
-// ============================================================================
+
+
+
 function initNavSlider() {
     const activeLink = document.querySelector('.nav-link.active') || document.getElementById('nav-home');
     updateNavSlider(activeLink);
@@ -701,7 +701,7 @@ function navigateTo(target, event) {
         return;
     }
 
-    // Otherwise, ensure storefront homepage is visible
+
     homePage.classList.add('active');
     demoPage.classList.remove('active');
 
@@ -723,7 +723,7 @@ function navigateTo(target, event) {
     }
 }
 
-// ScrollSpy to dynamically slide nav indicator as user scrolls
+
 function setupScrollSpy() {
     window.addEventListener('scroll', () => {
         const demoPage = document.getElementById('page-demo');
@@ -747,9 +747,9 @@ function setupScrollSpy() {
     });
 }
 
-// ============================================================================
-// 1. FEATURED PRODUCTS RENDERING (Curated Spotlight)
-// ============================================================================
+
+
+
 function renderFeaturedProducts() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
@@ -766,7 +766,7 @@ function renderFeaturedProducts() {
                 <div class="card-cat">${prod.category} • <i data-lucide="star" style="width: 13px; height: 13px; fill: #ffd166; stroke: #121212; display: inline-block; vertical-align: -1px;"></i> ${prod.rating}</div>
                 <h3 class="card-title">${prod.name}</h3>
                 <p class="card-specs">${prod.specs}</p>
-                
+
                 <div class="card-price-row">
                     <div class="card-price">₱${prod.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
                     <div class="card-cost-ref">Ref Cost: ₱${prod.cost}</div>
@@ -791,9 +791,9 @@ function renderFeaturedProducts() {
     if (window.lucide) lucide.createIcons();
 }
 
-// ============================================================================
-// 2. CATEGORIES SECTION RENDERING
-// ============================================================================
+
+
+
 const CATEGORY_META = [
     { name: "Watches & Wearables", icon: "watch", desc: "Apple Watch, 5G & AI Chronos" },
     { name: "Keyboards", icon: "keyboard", desc: "Mechanical & Anime Novelties" },
@@ -833,8 +833,8 @@ function renderCategoryPills() {
     const uniqueCats = ['all', ...CATEGORY_META.map(c => c.name)];
 
     bar.innerHTML = uniqueCats.map(cat => `
-        <button class="cat-pill ${cat === currentCategory ? 'active' : ''}" 
-                id="cat-pill-${cat.replace(/\s+/g, '-')}" 
+        <button class="cat-pill ${cat === currentCategory ? 'active' : ''}"
+                id="cat-pill-${cat.replace(/\s+/g, '-')}"
                 onclick="setCategoryFilter('${cat}', this)">
             ${cat === 'all' ? `All Products (${PRODUCTS.length})` : cat}
         </button>
@@ -846,7 +846,7 @@ function selectCategoryFilter(categoryName) {
     renderCategoryPills();
     renderProducts();
 
-    // Scroll to products catalog
+
     const prodSec = document.getElementById('products-section');
     if (prodSec) {
         prodSec.scrollIntoView({ behavior: 'smooth' });
@@ -860,9 +860,9 @@ function setCategoryFilter(cat, btn) {
     renderProducts();
 }
 
-// ============================================================================
-// 3. ALL PRODUCTS CATALOG RENDERING & FILTERING
-// ============================================================================
+
+
+
 function renderProducts() {
     const grid = document.getElementById('products-grid');
     if (!grid) return;
@@ -872,13 +872,13 @@ function renderProducts() {
 
     let filtered = PRODUCTS.filter(prod => {
         const matchCategory = (currentCategory === 'all' || prod.category === currentCategory);
-        const matchSearch = prod.name.toLowerCase().includes(searchTerm) || 
+        const matchSearch = prod.name.toLowerCase().includes(searchTerm) ||
                             prod.specs.toLowerCase().includes(searchTerm) ||
                             prod.category.toLowerCase().includes(searchTerm);
         return matchCategory && matchSearch;
     });
 
-    // Sorting
+
     if (sortVal === 'price-low') {
         filtered.sort((a, b) => a.price - b.price);
     } else if (sortVal === 'price-high') {
@@ -910,7 +910,7 @@ function renderProducts() {
                 <div class="card-cat">${prod.category} • <i data-lucide="star" style="width: 13px; height: 13px; fill: #ffd166; stroke: #121212; display: inline-block; vertical-align: -1px;"></i> ${prod.rating}</div>
                 <h3 class="card-title">${prod.name}</h3>
                 <p class="card-specs">${prod.specs}</p>
-                
+
                 <div class="card-price-row">
                     <div class="card-price">₱${prod.price.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
                     <div class="card-cost-ref">Ref Cost: ₱${prod.cost}</div>
@@ -935,9 +935,9 @@ function renderProducts() {
     if (window.lucide) lucide.createIcons();
 }
 
-// ============================================================================
-// SCROLL SUMMON OBSERVER (Summoning Animation with Spring Waves)
-// ============================================================================
+
+
+
 let summonObserver = null;
 
 function observeSummonCards() {
@@ -955,7 +955,7 @@ function observeSummonCards() {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('summoned');
                 } else {
-                    // When scrolled away, reset so it summons again when scrolling into view
+
                     entry.target.classList.remove('summoned');
                 }
             });
@@ -965,7 +965,7 @@ function observeSummonCards() {
         });
     }
 
-    // Apply staggered ripple per grid container
+
     ['.featured-grid', '.categories-grid', '.products-grid'].forEach(selector => {
         const grid = document.querySelector(selector);
         if (!grid) return;
@@ -1001,9 +1001,9 @@ function stepQty(elementId, delta) {
     el.innerText = val;
 }
 
-// ============================================================================
-// SHOPPING CART LOGIC
-// ============================================================================
+
+
+
 function addProductToCart(prodId, qtyElementId) {
     const prod = PRODUCTS.find(p => p.id === prodId);
     if (!prod) return;
@@ -1135,13 +1135,13 @@ function updateCartUI() {
     totalEl.innerText = total.toLocaleString('en-US', { minimumFractionDigits: 2 });
 }
 
-// ============================================================================
-// TRACK A: E-COMMERCE EVENT NODE - CHECKOUT & NODE B INGESTION
-// [RUBRIC REQUIREMENT - TASK 1: E-Commerce Event Node (Track A)]
-// "Program Node A to emit a payload whenever a transaction occurs in Module 6.
-//  Required Fields: transaction_id, timestamp, entity_id, monetary_value,
-//  status, and line_items."
-// ============================================================================
+
+
+
+
+
+
+
 async function checkout() {
     if (cart.length === 0) {
         alert("Your cart is empty! Please add some gadgets first.");
@@ -1152,29 +1152,29 @@ async function checkout() {
     checkoutBtn.disabled = true;
     checkoutBtn.innerHTML = `<span>Transmitting to Track B...</span>`;
 
-    // 1. Extract selected Customer Entity (entity_id, customer_name, email)
+
     const customerSelect = document.getElementById('customer-select').value.split('|');
     const custId = customerSelect[0];
     const custName = customerSelect[1];
     const custEmail = customerSelect[2];
 
-    // 2. Extract Fulfillment Warehouse & Payment Method
+
     const warehouseLocation = document.getElementById('warehouse-select').value;
     const paymentMethod = document.getElementById('payment-select').value;
 
-    // 3. Calculate Cart Totals, 12% VAT Tax, and Final Monetary Value
+
     const subtotal = cart.reduce((sum, item) => sum + item.line_total, 0);
     const tax = Math.round(subtotal * 0.12 * 100) / 100;
     const shipping = 0;
     const total = Math.round((subtotal + tax + shipping) * 100) / 100;
     const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-    // 4. Generate Unique Transaction & Event Identifiers
+
     const transactionId = "ORD-2026-" + Math.floor(Math.random() * 9000 + 1000);
     const eventId = "EVT-" + Math.floor(Math.random() * 900000 + 100000);
     const referenceNo = "PAY-" + Math.floor(Math.random() * 900000 + 100000);
 
-    // 5. Build Structured Line Items Array (includes unit_price & unit_cost for Track C Net Margin)
+
     const cleanLineItems = cart.map(item => ({
         line_no: item.line_no,
         product_id: item.product_id,
@@ -1186,31 +1186,31 @@ async function checkout() {
         line_total: item.line_total
     }));
 
-    // 6. Assemble Syntactically Valid Schema v1.1 JSON Transaction Payload
+
     const payload = {
         schema_version: "1.1",
         event_id: eventId,
         event_type: "Order Completed",
         source_system: "Node-A-ECommerce-Storefront-UI",
         warehouse_location: warehouseLocation,
-        transaction_id: transactionId,            // Required Rubric Field #1
-        timestamp: new Date().toISOString(),      // Required Rubric Field #2 (ISO-8601)
+        transaction_id: transactionId,
+        timestamp: new Date().toISOString(),
         entity_type: "Customer",
-        entity_id: custId,                        // Required Rubric Field #3
+        entity_id: custId,
         customer: {
             customer_id: custId,
             customer_name: custName,
             email: custEmail
         },
-        status: "Completed",                      // Required Rubric Field #4
-        status_code: "C",                         // Raw code transformed by Track C ETL
+        status: "Completed",
+        status_code: "C",
         payment: {
             method: paymentMethod,
             payment_status: "Paid",
             reference_no: referenceNo
         },
         currency: "PHP",
-        line_items: cleanLineItems,               // Required Rubric Field #5
+        line_items: cleanLineItems,
         totals: {
             item_count: itemCount,
             subtotal: subtotal,
@@ -1218,20 +1218,20 @@ async function checkout() {
             tax_rate: 0.12,
             tax_amount: tax,
             shipping_fee: shipping,
-            monetary_value: total                 // Required Rubric Field #6
+            monetary_value: total
         }
     };
 
     latestPayload = payload;
     updatePayloadViewer(payload);
 
-    // 7. Emit HTTP POST Event to Track B Ingestion Endpoint with Bearer Token Auth
+
     try {
         let response = await fetch(API_BASE, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': SECRET_TOKEN     // Verified by Track B (Bearer itec116_secret_token)
+                'Authorization': SECRET_TOKEN
             },
             body: JSON.stringify(payload)
         });
@@ -1259,9 +1259,9 @@ async function checkout() {
     }
 }
 
-// ============================================================================
-// ACTIVITY DEMO DASHBOARD CONTROLLER (Node B, C, D Orchestration)
-// ============================================================================
+
+
+
 async function fetchPipelineStatus(updateTerminal = false) {
     try {
         let res = await fetch(`${API_BASE}?action=status`);
@@ -1278,7 +1278,7 @@ async function fetchPipelineStatus(updateTerminal = false) {
         document.getElementById('kpi-ingested-count').innerText = totalIngested;
         document.getElementById('kpi-fact-count').innerText = totalFacts;
         document.getElementById('kpi-revenue').innerText = `₱${totalRev.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-        
+
         const recEl = document.getElementById('kpi-reconciliation');
         const lossBadge = document.getElementById('kpi-loss-badge');
 
@@ -1337,7 +1337,7 @@ async function triggerQAAudit() {
             let r = data.row_reconciliation;
             let f = data.financial_reconciliation;
 
-            let terminalText = 
+            let terminalText =
 `========================================
   TRACK D: QA RECONCILIATION AUDIT
 ========================================

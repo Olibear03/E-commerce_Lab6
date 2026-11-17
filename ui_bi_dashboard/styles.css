@@ -1,7 +1,7 @@
-/* ==========================================================================
-   ITEC 116 Activity 6: Executive BI Analytics Dashboard
-   Theme: Neo-Brutalist Graphic Analytics (Matching Demo Storefront)
-   ========================================================================== */
+
+
+
+
 
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800;900&display=swap');
 
@@ -16,7 +16,7 @@
     --color-gray-600: #64748b;
     --color-gray-800: #1e293b;
 
-    /* Neo-Brutalist Accent Palette */
+
     --accent-blue: #93d2e3;
     --accent-blue-light: #e4f4f8;
     --accent-blue-dark: #0284c7;
@@ -64,10 +64,10 @@ body {
     margin: 0 auto;
 }
 
-/* ==========================================================================
-   SCROLL REVEAL "SUMMONING" ANIMATIONS
-   Cards rise up dynamically from below with spring physics and staggered ripple
-   ========================================================================== */
+
+
+
+
 .summon-card {
     opacity: 0;
     transform: translateY(60px) scale(0.96);
@@ -91,9 +91,9 @@ body {
     box-shadow: var(--shadow-brutal-lg);
 }
 
-/* ==========================================================================
-   TOP BAR & HEADER
-   ========================================================================== */
+
+
+
 .bi-header {
     background: var(--bg-card);
     border: var(--border-thick);
@@ -245,9 +245,9 @@ body {
     background: #fcd34d;
 }
 
-/* ==========================================================================
-   METRIC STATS CARDS
-   ========================================================================== */
+
+
+
 .metrics-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -369,9 +369,9 @@ body {
     color: #6b21a8;
 }
 
-/* ==========================================================================
-   CHARTS GRID
-   ========================================================================== */
+
+
+
 .charts-grid-main {
     display: grid;
     grid-template-columns: 1.6fr 1fr;
@@ -460,9 +460,9 @@ body {
     width: 100%;
 }
 
-/* ==========================================================================
-   STAR SCHEMA TRANSACTION LEDGER TABLE
-   ========================================================================== */
+
+
+
 .ledger-card {
     background: var(--bg-card);
     border: var(--border-thick);

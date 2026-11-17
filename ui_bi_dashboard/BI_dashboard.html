@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Executive BI Analytics Dashboard | ITEC 116 Activity 6</title>
-    <!-- Google Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Chart.js CDN -->
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Lucide Icons CDN -->
+
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <div class="dashboard-container">
-        <!-- TOP EXECUTIVE HEADER -->
+
         <header class="bi-header summon-card">
             <div class="bi-brand-title">
                 <div class="bi-icon-box">
@@ -49,9 +49,9 @@
             </div>
         </header>
 
-        <!-- 4 TOP FINANCIAL & OPERATIONAL KPIS -->
+
         <section class="metrics-row">
-            <!-- 1. Total Gross Revenue -->
+
             <div class="metric-card cyan summon-card">
                 <div class="metric-top">
                     <span class="metric-label">Total Gross Revenue</span>
@@ -69,7 +69,7 @@
                 </div>
             </div>
 
-            <!-- 2. Total Net Margin / Profit -->
+
             <div class="metric-card emerald summon-card">
                 <div class="metric-top">
                     <span class="metric-label">Total Net Margin (Profit)</span>
@@ -84,7 +84,7 @@
                 </div>
             </div>
 
-            <!-- 3. Completed Transactions -->
+
             <div class="metric-card amber summon-card">
                 <div class="metric-top">
                     <span class="metric-label">Completed Orders</span>
@@ -99,7 +99,7 @@
                 </div>
             </div>
 
-            <!-- 4. Average Order Value -->
+
             <div class="metric-card purple summon-card">
                 <div class="metric-top">
                     <span class="metric-label">Average Order Value (AOV)</span>
@@ -115,9 +115,9 @@
             </div>
         </section>
 
-        <!-- MAIN CHARTS ROW -->
+
         <section class="charts-grid-main">
-            <!-- Time Trend Chart (Dim_Time) -->
+
             <div class="chart-card summon-card">
                 <div class="chart-card-header">
                     <div class="chart-title">
@@ -133,7 +133,7 @@
                 </div>
             </div>
 
-            <!-- Warehouse Distribution Chart (Fulfillment Dimension) -->
+
             <div class="chart-card summon-card">
                 <div class="chart-card-header">
                     <div class="chart-title">
@@ -150,9 +150,9 @@
             </div>
         </section>
 
-        <!-- SECONDARY CHARTS ROW -->
+
         <section class="charts-grid-secondary">
-            <!-- Customer Leaderboard (Dim_Customer) -->
+
             <div class="chart-card summon-card">
                 <div class="chart-card-header">
                     <div class="chart-title">
@@ -168,7 +168,7 @@
                 </div>
             </div>
 
-            <!-- Product Dimensions Pricing Spread (Dim_Product) -->
+
             <div class="chart-card summon-card">
                 <div class="chart-card-header">
                     <div class="chart-title">
@@ -185,7 +185,7 @@
             </div>
         </section>
 
-        <!-- STAR SCHEMA TRANSACTION LEDGER -->
+
         <section class="ledger-card summon-card">
             <div class="ledger-header">
                 <div class="ledger-title-group">
@@ -229,7 +229,7 @@
         </section>
     </div>
 
-    <!-- BI QUERIES & VISUALIZATIONS -->
+
     <script src="queries.js"></script>
 </body>
 </html>

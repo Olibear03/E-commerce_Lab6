@@ -1,7 +1,7 @@
-/* ==========================================================================
-   GADGETSTYLE - Neo-Brutalist / Memphis Graphic E-Commerce Theme
-   ITEC 116 Activity 6: Storefront (Node A) & Pipeline Demo Monitor
-   ========================================================================== */
+
+
+
+
 
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800;900&display=swap');
 
@@ -15,8 +15,8 @@
     --color-gray-400: #94a3b8;
     --color-gray-600: #475569;
     --color-gray-800: #1e293b;
-    
-    /* Memphis / Reference Accent Colors */
+
+
     --accent-blue: #93d2e3;
     --accent-blue-light: #e4f4f8;
     --accent-blue-dark: #3b8296;
@@ -64,9 +64,9 @@ svg.lucide {
     stroke-width: 2.2px;
 }
 
-/* ==========================================================================
-   HEADER & NAVBAR (Matches the uploaded style)
-   ========================================================================== */
+
+
+
 .site-header {
     display: flex;
     align-items: stretch;
@@ -161,7 +161,7 @@ svg.lucide {
     color: #000;
 }
 
-/* Sliding active indicator underline */
+
 .nav-slider-indicator {
     position: absolute;
     bottom: 0px;
@@ -243,9 +243,9 @@ svg.lucide {
     border-radius: 12px;
 }
 
-/* ==========================================================================
-   VIEW SWITCHER CONTAINER (Home vs Activity Demo)
-   ========================================================================== */
+
+
+
 .view-container {
     width: 100%;
 }
@@ -258,9 +258,9 @@ svg.lucide {
     display: block;
 }
 
-/* ==========================================================================
-   HERO SECTION (Matches reference image)
-   ========================================================================== */
+
+
+
 .hero-section {
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
@@ -271,7 +271,7 @@ svg.lucide {
     overflow: hidden;
 }
 
-/* Left Hero: Typography & Memphis Graphics */
+
 .hero-left {
     padding: 56px 64px;
     display: flex;
@@ -281,7 +281,7 @@ svg.lucide {
     background: var(--bg-white);
 }
 
-/* Memphis Geometric Shapes */
+
 .geo-shape {
     position: absolute;
     pointer-events: none;
@@ -446,7 +446,7 @@ svg.lucide {
     box-shadow: var(--shadow-brutal);
 }
 
-/* Bottom Memphis elements on Hero Left */
+
 .hero-bottom-accents {
     display: flex;
     align-items: center;
@@ -500,7 +500,7 @@ svg.lucide {
     transform: rotate(35deg);
 }
 
-/* Right Hero: Sky Blue Block with Gadget Showcase */
+
 .hero-right {
     background-color: var(--accent-blue);
     border-left: var(--border-thick);
@@ -512,7 +512,7 @@ svg.lucide {
     overflow: hidden;
 }
 
-/* Memphis Geometric Accents on Blue Panel */
+
 .dot-grid {
     position: absolute;
     top: 24px;
@@ -545,7 +545,7 @@ svg.lucide {
     gap: 4px;
 }
 
-/* Hero Showcase Card */
+
 .hero-showcase {
     position: relative;
     z-index: 5;
@@ -567,7 +567,7 @@ svg.lucide {
     transform: scale(1.02);
 }
 
-/* Hero Showcase Hover Navigation Arrows */
+
 .hero-nav-arrow {
     position: absolute;
     top: 42%;
@@ -604,7 +604,7 @@ svg.lucide {
     right: 12px;
 }
 
-/* ONLY show arrows on hover over this showcase card */
+
 .hero-showcase:hover .hero-nav-arrow {
     opacity: 1;
     visibility: visible;
@@ -700,9 +700,9 @@ svg.lucide {
     z-index: 6;
 }
 
-/* ==========================================================================
-   FEATURE TICKER / BANNER
-   ========================================================================== */
+
+
+
 .feature-ticker {
     background: var(--color-black);
     color: var(--bg-white);
@@ -739,10 +739,10 @@ svg.lucide {
     100% { transform: translateX(-50%); }
 }
 
-/* ==========================================================================
-   SCROLL REVEAL "SUMMONING" ANIMATIONS
-   Cards rise up dynamically from below with spring physics and staggered ripple
-   ========================================================================== */
+
+
+
+
 .summon-card {
     opacity: 0;
     transform: translateY(70px) scale(0.95);
@@ -787,9 +787,9 @@ svg.lucide {
     transform: translateY(0);
 }
 
-/* ==========================================================================
-   FEATURED PRODUCTS SECTION (Spotlight & Curated Drops)
-   ========================================================================== */
+
+
+
 .section-wrapper {
     max-width: 1320px;
     margin: 56px auto;
@@ -841,7 +841,7 @@ svg.lucide {
     color: var(--color-gray-600);
 }
 
-/* Featured Products Grid */
+
 .featured-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -870,9 +870,9 @@ svg.lucide {
     height: 240px;
 }
 
-/* ==========================================================================
-   CATEGORIES SECTION
-   ========================================================================== */
+
+
+
 .categories-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -957,7 +957,7 @@ svg.lucide {
     color: var(--accent-yellow);
 }
 
-/* Sort select dropdown */
+
 .sort-select {
     border: var(--border-medium);
     padding: 8px 12px;
@@ -971,9 +971,9 @@ svg.lucide {
     cursor: pointer;
 }
 
-/* ==========================================================================
-   PRODUCTS CATALOG SECTION
-   ========================================================================== */
+
+
+
 .catalog-section {
     max-width: 1320px;
     margin: 48px auto;
@@ -1072,7 +1072,7 @@ svg.lucide {
     box-shadow: var(--shadow-brutal);
 }
 
-/* Product Grid */
+
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1263,9 +1263,9 @@ svg.lucide {
     box-shadow: var(--shadow-brutal);
 }
 
-/* ==========================================================================
-   CART SLIDE-OVER DRAWER
-   ========================================================================== */
+
+
+
 .cart-drawer-overlay {
     position: fixed;
     top: 0;
@@ -1417,7 +1417,7 @@ svg.lucide {
     margin-bottom: 12px;
 }
 
-/* Checkout Form Options in Cart */
+
 .checkout-metadata-box {
     background: var(--color-gray-100);
     border: var(--border-medium);
@@ -1518,9 +1518,9 @@ svg.lucide {
     cursor: not-allowed;
 }
 
-/* ==========================================================================
-   ACTIVITY DEMO MONITOR (ITEC 116 Activity 6 Enterprise Pipeline Console)
-   ========================================================================== */
+
+
+
 .demo-dashboard-section {
     max-width: 1380px;
     margin: 32px auto 64px auto;
@@ -1574,7 +1574,7 @@ svg.lucide {
     gap: 8px;
 }
 
-/* 4-Node Pipeline Flowchart Bar */
+
 .pipeline-flow-bar {
     background: var(--bg-white);
     border: var(--border-thick);
@@ -1652,7 +1652,7 @@ svg.lucide {
     line-height: 1.4;
 }
 
-/* Control Deck Bar */
+
 .demo-control-deck {
     display: flex;
     align-items: center;
@@ -1709,7 +1709,7 @@ svg.lucide {
     background: var(--accent-green);
 }
 
-/* Rubric KPIs Cards */
+
 .kpi-cards-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1760,7 +1760,7 @@ svg.lucide {
     color: #166534;
 }
 
-/* Dual Column Live Inspector */
+
 .inspector-dual-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1815,7 +1815,7 @@ svg.lucide {
 .json-number { color: #facc15; }
 .json-boolean { color: #f472b6; }
 
-/* Table View in Inspector */
+
 .table-viewer-box {
     height: 380px;
     overflow: auto;
@@ -1870,7 +1870,7 @@ svg.lucide {
     color: #854d0e;
 }
 
-/* Track D Terminal Report */
+
 .terminal-audit-box {
     background: #09090b;
     color: #22c55e;
@@ -1886,9 +1886,9 @@ svg.lucide {
     overflow-y: auto;
 }
 
-/* ==========================================================================
-   FOOTER (Matches reference image)
-   ========================================================================== */
+
+
+
 .site-footer {
     background-color: var(--color-black);
     color: var(--bg-white);
@@ -1949,9 +1949,9 @@ svg.lucide {
     transform: translateY(-2px);
 }
 
-/* ==========================================================================
-   TOAST NOTIFICATION MODAL
-   ========================================================================== */
+
+
+
 .toast-notice {
     position: fixed;
     bottom: 24px;
@@ -1989,7 +1989,7 @@ svg.lucide {
     border-radius: 3px;
 }
 
-/* Responsive adjustments */
+
 @media (max-width: 960px) {
     .hero-section {
         grid-template-columns: 1fr;

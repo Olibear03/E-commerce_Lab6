@@ -1,8 +1,7 @@
 <?php
-// Set timezone to Manila for correct ISO-8601 timestamps
+
 date_default_timezone_set('Asia/Manila');
 
-// 1. Mock Database (Products, Customers, Warehouses)
 $customers = [
     ["id" => "CUST-001", "name" => "Juan Dela Cruz", "email" => "juan.delacruz@example.com"],
     ["id" => "CUST-002", "name" => "Maria Clara", "email" => "maria.clara@example.com"],
@@ -23,28 +22,26 @@ $products = [
 $warehouses = ["WH-MNL-01 (Manila)", "WH-CAV-02 (Dasmariñas)", "WH-CEB-01 (Cebu)"];
 
 function generate_dynamic_order($customers, $products, $warehouses) {
-    // 2. Setup Random Variables
+
     $customer = $customers[array_rand($customers)];
     $warehouse = $warehouses[array_rand($warehouses)];
     $transaction_id = "ORD-2026-" . rand(1000, 9999);
-    
-    // ISO-8601 formatted timestamp
+
     $timestamp = date('c');
 
-    // 3. Dynamically Generate Line Items
-    $num_items = rand(1, 3); // Customer buys 1 to 3 different products
+    $num_items = rand(1, 3);
     shuffle($products);
     $selected_products = array_slice($products, 0, $num_items);
-    
+
     $line_items = [];
     $item_count = 0;
     $subtotal = 0;
     $line_no = 1;
 
     foreach ($selected_products as $prod) {
-        $qty = rand(1, 5); // Customer buys 1 to 5 pieces of this product
+        $qty = rand(1, 5);
         $line_total = $qty * $prod["price"];
-        
+
         $line_items[] = [
             "line_no" => $line_no++,
             "product_id" => $prod["id"],
@@ -55,24 +52,22 @@ function generate_dynamic_order($customers, $products, $warehouses) {
             "unit_cost" => $prod["cost"],
             "line_total" => $line_total
         ];
-        
+
         $item_count += $qty;
         $subtotal += $line_total;
     }
 
-    // 4. Calculate Dynamic Totals
     $tax_rate = 0.12;
     $tax_amount = round($subtotal * $tax_rate, 2);
-    
+
     $shipping_options = [0, 50, 100];
-    $shipping_fee = $shipping_options[array_rand($shipping_options)]; 
+    $shipping_fee = $shipping_options[array_rand($shipping_options)];
     $monetary_value = round($subtotal + $tax_amount + $shipping_fee, 2);
 
     $payment_methods = ["GCash", "Credit Card", "Maya"];
     $event_id = "EVT-" . strtoupper(bin2hex(random_bytes(4)));
     $reference_no = "PAY-" . strtoupper(bin2hex(random_bytes(4)));
 
-    // 5. Build the Final Payload (Team A's Schema)
     $payload = [
         "schema_version" => "1.1",
         "event_id" => $event_id,
@@ -107,17 +102,15 @@ function generate_dynamic_order($customers, $products, $warehouses) {
             "monetary_value" => $monetary_value
         ]
     ];
-    
+
     return $payload;
 }
 
-// Generate 1 random order and echo it as JSON
 $new_order = generate_dynamic_order($customers, $products, $warehouses);
 $json_payload = json_encode($new_order);
 
 echo "Sending Transaction: " . $new_order['transaction_id'] . "...\n";
 
-// Use cURL to POST the data to Track B
 $ch = curl_init('http://127.0.0.1:5000/server.php');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
